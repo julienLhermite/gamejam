@@ -14,7 +14,9 @@ class Back:
         self.rect = self.rect.move(coord[0], coord[1])
         surfaces.append(self)
 
+
 class Perso():
+
     def __init__(self, niveau, image_name):
         self.surface = pygame.image.load(os.path.join("images", "case", image_name)).convert()
         self.struct = niveau.structure
@@ -30,24 +32,28 @@ class Perso():
 
     def move(self, dir):
         if (dir == DOWN) and (self.pos[0] < self.struct_size-1):
-            self.struct[self.pos[0]][self.pos[1]].replace("P","")
-            self.pos[0] += 1
-            self.struct[self.pos[0]][self.pos[1]] += "P"
+            if self.struct[self.pos[0]+1][self.pos[1]] != 'M':
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P","")
+                self.pos[0] += 1
+                self.struct[self.pos[0]][self.pos[1]] += "P"
 
         elif (dir == UP) and (self.pos[0] > 0):
-            self.struct[self.pos[0]][self.pos[1]].replace("P","")
-            self.pos[0] -= 1
-            self.struct[self.pos[0]][self.pos[1]] += "P"
+            if self.struct[self.pos[0]-1][self.pos[1]] != 'M':
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P", "")
+                self.pos[0] -= 1
+                self.struct[self.pos[0]][self.pos[1]] += "P"
 
         elif (dir == RIGHT) and (self.pos[1] < self.struct_size-1):
-            self.struct[self.pos[0]][self.pos[1]].replace("P","")
-            self.pos[1] += 1
-            self.struct[self.pos[0]][self.pos[1]] += "P"
+            if self.struct[self.pos[0]][self.pos[1]+1] != 'M':
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P", "")
+                self.pos[1] += 1
+                self.struct[self.pos[0]][self.pos[1]] += "P"
 
         elif (dir == LEFT) and (self.pos[1] > 0):
-            self.struct[self.pos[0]][self.pos[1]].replace("P","")
-            self.pos[1] -= 1
-            self.struct[self.pos[0]][self.pos[1]] += "P"
+            if self.struct[self.pos[0]][self.pos[1]-1] != 'M':
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P","")
+                self.pos[1] -= 1
+                self.struct[self.pos[0]][self.pos[1]] += "P"
 
 class Niveau:
     """Classe permettant de créer un niveau"""
@@ -68,8 +74,6 @@ class Niveau:
             self.coord_depart = [random_depart, size - 1]
         elif direction_in == LEFT:
             self.coord_depart = [random_depart, 0]
-
-
 
     def set_out(self, nb_out):
         """
@@ -112,7 +116,6 @@ class Niveau:
 
                 if [i_line, i_cell] in self.coord_sorties:
                     structure_niveau[i_line][i_cell] = "S"
-
 
             for line in structure_niveau:
                 print(line)
