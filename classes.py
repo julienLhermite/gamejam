@@ -6,6 +6,15 @@ import random
 random.seed()
 
 
+class Back:
+    def __init__(self, image_name, coord, screen, surfaces):
+        self.surface = pygame.image.load(os.path.join("images", "background", image_name)).convert()
+        self.screen = screen
+        self.rect = self.surface.get_rect()
+        self.rect = self.rect.move(coord[0], coord[1])
+        surfaces.append(self)
+
+
 class Perso():
 
     def __init__(self, niveau, image_name):
@@ -74,19 +83,21 @@ class Niveau:
         mur = pygame.image.load(os.path.join("images", "case", "mur.png")).convert()
         depart = pygame.image.load(os.path.join("images", "case", "depart.png")).convert()
 
+        print(self.structure)
+
         # On parcourt la liste du niveau
         for i_line, line in enumerate(self.structure):
             # On parcourt les listes de lignes
             for i_cell, cell in enumerate(line):
-                x = i_cell * CELL_SIZE[0] + DEPP_CASE[0]
-                y = i_line * CELL_SIZE[1] + DEPP_CASE[1]
+                x = i_cell * CELL_SIZE[0] + DEP_CASE[0]
+                y = i_line * CELL_SIZE[1] + DEP_CASE[1]
                 if "M" in cell:  # m = Mur
-                    print("hey")
                     fenetre.blit(mur, (x, y))
                 if "D" in cell:  # d = Départ
                     fenetre.blit(depart, (x, y))
                 if 'P' in cell:  # p = perso
                     fenetre.blit(perso.surface, (x, y))
+
 
 
 

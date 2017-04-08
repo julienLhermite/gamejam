@@ -19,7 +19,7 @@ import os
 from classes import *
 
 
-def update(liste):
+def update(liste, niveau):
     for image in liste:
         image.screen.blit(image.surface, image.rect)
 
@@ -36,8 +36,11 @@ surfaces = []
 screen = pygame.display.set_mode((1440, 874))
 background = Back("bg-excel.png", (0,0), screen, surfaces)
 
+
+level1 = Niveau(70,7,[0,4])
+
 # Init perso
-perso = Perso("perso.png", DEP_CASE, screen, surfaces)
+perso = Perso(level1, "perso.png")
 
 print(surfaces)
 clock = pygame.time.Clock()
@@ -54,7 +57,6 @@ moves = {pygame.K_LEFT:  LEFT,
          pygame.K_UP: UP,
          pygame.K_DOWN: DOWN}
 
-level1 = Niveau(70,7,[0,4])
 
 update(surfaces, level1)
 
@@ -74,14 +76,12 @@ while not quit:
         # if we change the direction, we need another animation
         print(dir)
         last_key_pressed = time.time()
-        print(perso.rect)
+        print(perso.pos)
         perso.move(dir)
-        print(perso.rect)
-
-    else:
-        state = None
+        print(perso.pos)
+        update(surfaces, level1)
 
     # display first image in cachedeque
     # screen.blit(cachedeque[0], rect)
 
-    update(surfaces, level1)
+
