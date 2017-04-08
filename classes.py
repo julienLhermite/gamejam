@@ -28,28 +28,48 @@ class Hero(Personnage):
 
     def move(self, dir):
         if (dir == DOWN) and (self.pos[0] < self.struct_size-1):
-            if self.struct[self.pos[0]+1][self.pos[1]] != 'M':
-                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P","")
+            # si rien n'est tangible sur la case où on veut aller
+            if [chose for chose in self.struct[self.pos[0]+1][self.pos[1]] if chose in TANGIBLE] == []:
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(HERO,"")
                 self.pos[0] += 1
-                self.struct[self.pos[0]][self.pos[1]] += "P"
+                self.struct[self.pos[0]][self.pos[1]] += HERO
+            # (si y a un mur on le casse un peu)
+            elif MUR in self.struct[self.pos[0]+1][self.pos[1]]:
+                self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR,MUR_CASSE)
+            elif MUR_CASSE in self.struct[self.pos[0]+1][self.pos[1]]:
+                self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR_CASSE,"")
+
 
         elif (dir == UP) and (self.pos[0] > 0):
-            if self.struct[self.pos[0]-1][self.pos[1]] != 'M':
-                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P", "")
+            if [chose for chose in self.struct[self.pos[0]-1][self.pos[1]] if chose in TANGIBLE] == []:
+                self.struct[self.pos[0]][self.pos[1]] =  self.struct[self.pos[0]][self.pos[1]].replace(HERO, "")
                 self.pos[0] -= 1
-                self.struct[self.pos[0]][self.pos[1]] += "P"
+                self.struct[self.pos[0]][self.pos[1]] += HERO
+            elif MUR in self.struct[self.pos[0]-1][self.pos[1]]:
+                self.struct[self.pos[0] - 1][self.pos[1]] = self.struct[self.pos[0]-1][self.pos[1]].replace(MUR,MUR_CASSE)
+            elif MUR_CASSE in self.struct[self.pos[0]-1][self.pos[1]]:
+                self.struct[self.pos[0] - 1][self.pos[1]] = self.struct[self.pos[0]-1][self.pos[1]].replace(MUR_CASSE,"")
 
         elif (dir == RIGHT) and (self.pos[1] < self.struct_size-1):
-            if self.struct[self.pos[0]][self.pos[1]+1] != 'M':
-                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P", "")
+
+            if [chose for chose in self.struct[self.pos[0]][self.pos[1]+1] if chose in TANGIBLE] == []:
+                self.struct[self.pos[0]][self.pos[1]] =  self.struct[self.pos[0]][self.pos[1]].replace(HERO, "")
                 self.pos[1] += 1
-                self.struct[self.pos[0]][self.pos[1]] += "P"
+                self.struct[self.pos[0]][self.pos[1]] += HERO
+            elif MUR in self.struct[self.pos[0]][self.pos[1]+1]:
+                self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR,MUR_CASSE)
+            elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]+1]:
+                self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR_CASSE,"")
 
         elif (dir == LEFT) and (self.pos[1] > 0):
-            if self.struct[self.pos[0]][self.pos[1]-1] != 'M':
-                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P","")
+            if [chose for chose in self.struct[self.pos[0]][self.pos[1]-1] if chose in TANGIBLE] == []:
+                self.struct[self.pos[0]][self.pos[1]] =  self.struct[self.pos[0]][self.pos[1]].replace(HERO,"")
                 self.pos[1] -= 1
-                self.struct[self.pos[0]][self.pos[1]] += "P"
+                self.struct[self.pos[0]][self.pos[1]] += HERO
+            elif MUR in self.struct[self.pos[0]][self.pos[1]-1]:
+                self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR,MUR_CASSE)
+            elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]-1]:
+                self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR_CASSE,"")
 
 
 class StupidGhost(Personnage):
