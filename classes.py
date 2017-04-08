@@ -5,18 +5,20 @@ import random
 
 random.seed()
 
-class Perso:
+class Papa:
+    def __init__(self, image_name, coord, screen):
+        self.surface = pygame.image.load(os.path.join("images", "case", image_name)).convert()
+        self.screen = screen
+        self.rect = self.sprite.get_rect()
+        self.rect = self.rect.move(coord[0], coord[1])
+
+
+class Perso(Papa):
 
     def __init__(self, name, image_name,  coord, vie_max, parent):
         self.name = name
         self.vie_max = vie_max
         self.vie = vie_max
-
-        self.parent = parent
-        self.sprite = pygame.image.load(os.path.join("images", "case", image_name)).convert()
-        self.rect = self.sprite.get_rect()
-        self.rect = self.rect.move(50, 50)
-
 
 
     def move(self, dir):
@@ -50,12 +52,10 @@ class Niveau:
                     structure_niveau[i_line][i_cell] = "M"
 
                 if [i_line, i_cell] == coord_depart:
-                    print("ici!!!!!!!!!!!!!!!!")
                     structure_niveau[i_line][i_cell] = "DP"
 
-
-
-            print(structure_niveau)
+            for line in structure_niveau:
+                print(line)
         self.structure = structure_niveau
 
 
