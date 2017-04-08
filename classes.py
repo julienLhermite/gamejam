@@ -98,12 +98,39 @@ class StupidGhost(Personnage):
 
         if hero.pos == [self.pos[0]+mvt[0], self.pos[1]+mvt[1]]:
             hero.life -= 1
-        self.pos[0] += mvt[0]
-        self.pos[1] += mvt[1]
+        else:
+            self.pos[0] += mvt[0]
+            self.pos[1] += mvt[1]
 
         self.struct[self.pos[0]][self.pos[1]] += STUPID_GHOST
 
 
+class Ghost(Personnage):
+
+    def __init__(self, coord, niveau, image_name):
+        super().__init__( coord, niveau, image_name)
+        self.type = GHOST
+
+    def move(self, hero):
+        mvt = [0,0]
+        if self.pos[0] < hero.pos[0]:
+            mvt = [1, 0]
+        elif self.pos[0] > hero.pos[0]:
+            mvt = [-1, 0]
+        elif self.pos[1] < hero.pos[1]:
+            mvt = [0, 1]
+        elif self.pos[1] > hero.pos[1]:
+            mvt = [0, -1]
+
+        self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(GHOST, "")
+
+        if hero.pos == [self.pos[0]+mvt[0], self.pos[1]+mvt[1]]:
+            hero.life -= 1
+        # on maj si y a vraiment rien de tangible en face
+        elif [chose for chose in self.struct[self.pos[0]+mvt[0]][self.pos[1]+mvt[1]] if chose in TANGIBLE_FOR_GHOST] == []:
+            self.pos[0] += mvt[0]
+            self.pos[1] += mvt[1]
+        self.struct[self.pos[0]][self.pos[1]] += GHOST
 
 
 
@@ -111,7 +138,7 @@ class StupidGhost(Personnage):
 class Niveau:
     """Classe permettant de créer un niveau"""
 
-    def __init__(self, ratio_murs, size, direction_in, nb_out, nb_stupid_ghost):
+    def __init__(self, ratio_murs, size, direction_in, nb_out, nb_stupid_ghost, nb_ghost):
         self.size = size
         self.ratio_murs = ratio_murs
         self.direction_in = direction_in
@@ -132,6 +159,7 @@ class Niveau:
         self.set_out(nb_out)
         self.generer()
         self.set_stupid_ghost(nb_stupid_ghost)
+        self.set_ghost(nb_ghost)
 
 
     def set_stupid_ghost(self, nb):
@@ -141,6 +169,14 @@ class Niveau:
                 coord = [random.randrange(self.size), random.randrange(self.size)]
             self.position_busy.append(coord)
             self.structure[coord[0]][coord[1]] += STUPID_GHOST
+
+    def set_ghost(self, nb):
+        for i in range(nb):
+            coord = self.coord_depart
+            while coord in self.position_busy:
+                coord = [random.randrange(self.size), random.randrange(self.size)]
+            self.position_busy.append(coord)
+            self.structure[coord[0]][coord[1]] += GHOST
 
     def set_out(self, nb_out):
         """
@@ -212,6 +248,10 @@ class Niveau:
                 if STUPID_GHOST in cell:
                     for ennemy in ennemies:
                         if ennemy.type == STUPID_GHOST and ennemy.pos == [i_line, i_cell]:
+                            fenetre.blit(ennemy.surface, (x, y))
+                if GHOST in cell:
+                    for ennemy in ennemies:
+                        if ennemy.type == GHOST and ennemy.pos == [i_line, i_cell]:
                             fenetre.blit(ennemy.surface, (x, y))
 
     def __str__(self):

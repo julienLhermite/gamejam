@@ -37,7 +37,7 @@ screen = pygame.display.set_mode((1440, 874))
 background = Back("bg-excel.png", (0,0), screen, surfaces)
 
 
-level1 = Niveau(10, 7, LEFT, 2, 2)
+level1 = Niveau(10, 7, LEFT, 2, 2, 2)
 
 # Initialisation des bordures du niveau
 for i in range(level1.size + 2):
@@ -58,6 +58,10 @@ for lin in range(level1.size):
             hero = Hero([lin, col], level1, "hero.png")
         elif STUPID_GHOST in case:
             ennemies.append(StupidGhost([lin, col], level1, "stupid_ghost.png"))
+        elif GHOST in case:
+            ennemies.append(Ghost([lin, col], level1, "ghost.png"))
+
+
 
 clock = pygame.time.Clock()
 last_key_pressed = 0
