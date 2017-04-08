@@ -20,17 +20,11 @@ from classes import *
 
 
 def update(liste):
-
     for papa in liste:
-
-
         papa.screen.blit(papa.surface, papa.rect)
-
     pygame.display.flip()
 
 pygame.init()
-
-
 
 # list of surfaces
 surfaces = []
@@ -39,10 +33,8 @@ surfaces = []
 screen = pygame.display.set_mode((1440, 874))
 background = Back("bg-excel.png", (0,0), screen, surfaces)
 
-
-
 # Init perso
-perso = Perso("perso.png", (150, 100), screen, surfaces)
+perso = Perso("perso.png", DEP_CASE, screen, surfaces)
 
 print(surfaces)
 clock = pygame.time.Clock()
@@ -73,7 +65,7 @@ while not quit:
     key, dir = next(pressed, (None, None))
 
     # if a key of the 'moves' dict is pressed:
-    if key and (time.time() - last_key_pressed >= 0.7):
+    if key and (time.time() - last_key_pressed >= 0.2):
         # if we change the direction, we need another animation
         print(dir)
         last_key_pressed = time.time()
@@ -88,5 +80,3 @@ while not quit:
     # screen.blit(cachedeque[0], rect)
 
     update(surfaces)
-
-

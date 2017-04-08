@@ -5,35 +5,42 @@ import random
 
 random.seed()
 
-class Papa:
-    def __init__(self, image_name, coord, screen, surfaces):
+
+class Perso():
+
+    def __init__(self, niveau, image_name):
         self.surface = pygame.image.load(os.path.join("images", "case", image_name)).convert()
-        self.screen = screen
-        self.rect = self.surface.get_rect()
-        self.rect = self.rect.move(coord[0], coord[1])
-        surfaces.append(self)
-
-class Back:
-    def __init__(self, image_name, coord, screen, surfaces):
-        self.surface = pygame.image.load(os.path.join("images", "background", image_name)).convert()
-        self.screen = screen
-        self.rect = self.surface.get_rect()
-        self.rect = self.rect.move(coord[0], coord[1])
-        surfaces.append(self)
-class Perso(Papa):
-
-    def __init__(self, image_name, coord, screen, surfaces):
-        Papa.__init__(self, image_name, coord, screen, surfaces)
+        self.struct = niveau.structure
+        self.struct_size = niveau.size
+        self.pos = None
+        for lin in range(len(self.struct)):
+            if self.pos:
+                break
+            for col in range(len(self.struct[0])):
+                if 'D' in self.struct[lin][col]:
+                    self.pos = [lin, col]
+                    break
 
     def move(self, dir):
-        if dir == DOWN:
-            self.rect = self.rect.move(0, 25)
-        elif dir == UP:
-            self.rect = self.rect.move(0, -25)
-        elif dir == RIGHT:
-            self.rect = self.rect.move(25, 0)
-        elif dir == LEFT:
-            self.rect = self.rect.move(-25, 0)
+        if (dir == DOWN) and (self.pos[0] < self.struct_size-1):
+            self.struct[self.pos[0]][self.pos[1]].replace("P","")
+            self.pos[0] += 1
+            self.struct[self.pos[0]][self.pos[1]] += "P"
+
+        elif (dir == UP) and (self.pos[0] > 0):
+            self.struct[self.pos[0]][self.pos[1]].replace("P","")
+            self.pos[0] -= 1
+            self.struct[self.pos[0]][self.pos[1]] += "P"
+
+        elif (dir == RIGHT) and (self.pos[1] < self.struct_size-1):
+            self.struct[self.pos[0]][self.pos[1]].replace("P","")
+            self.pos[1] += 1
+            self.struct[self.pos[0]][self.pos[1]] += "P"
+
+        elif (dir == LEFT) and (self.pos[1] > 0):
+            self.struct[self.pos[0]][self.pos[1]].replace("P","")
+            self.pos[1] -= 1
+            self.struct[self.pos[0]][self.pos[1]] += "P"
 
 class Niveau:
     """Classe permettant de créer un niveau"""
@@ -43,7 +50,6 @@ class Niveau:
         self.size = size
         self.coord_depart = (coord_depart)
         self.ratio_mur = ratio_murs
-
 
         structure_niveau = [["" for i in range(size)] for j in range(size)]
 
