@@ -3,7 +3,8 @@ DOWN = "down"
 LEFT = "left"
 RIGHT = "right"
 
-SPRITE_SIZE = 35
+CELL_SIZE = (50,50)
 
 FIRST_CELL_X = 120
 FIRST_CELL_Y = 80
+

@@ -83,6 +83,6 @@ while not quit:
     # display first image in cachedeque
     # screen.blit(cachedeque[0], rect)
 
-   # update(surfaces, background, screen)
+    update(surfaces)
 
 

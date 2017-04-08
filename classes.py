@@ -6,20 +6,14 @@ import random
 random.seed()
 
 class Papa:
-    def __init__(self, image_name, coord, screen):
+    def __init__(self, image_name, coord, screen, surfaces):
         self.surface = pygame.image.load(os.path.join("images", "case", image_name)).convert()
         self.screen = screen
         self.rect = self.sprite.get_rect()
         self.rect = self.rect.move(coord[0], coord[1])
-
+        surfaces.append(self)
 
 class Perso(Papa):
-
-    def __init__(self, name, image_name,  coord, vie_max, parent):
-        self.name = name
-        self.vie_max = vie_max
-        self.vie = vie_max
-
 
     def move(self, dir):
         if dir == DOWN:
@@ -30,8 +24,6 @@ class Perso(Papa):
             self.rect = self.rect.move(25, 0)
         elif dir == LEFT:
             self.rect = self.rect.move(-25, 0)
-
-
 
 class Niveau:
     """Classe permettant de créer un niveau"""
