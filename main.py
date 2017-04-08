@@ -19,18 +19,17 @@ import os
 from classes import *
 
 
-def update(liste):
+def update(liste, niveau):
 
     for papa in liste:
 
-
         papa.screen.blit(papa.surface, papa.rect)
+
+    niveau.afficher(screen, perso)
 
     pygame.display.flip()
 
 pygame.init()
-
-
 
 # list of surfaces
 surfaces = []
@@ -38,8 +37,6 @@ surfaces = []
 # set window and background
 screen = pygame.display.set_mode((1440, 874))
 background = Back("bg-excel.png", (0,0), screen, surfaces)
-
-
 
 # Init perso
 perso = Perso("perso.png", (150, 100), screen, surfaces)
@@ -59,7 +56,9 @@ moves = {pygame.K_LEFT:  LEFT,
          pygame.K_UP: UP,
          pygame.K_DOWN: DOWN}
 
-update(surfaces)
+level1 = Niveau(70,7,[0,4])
+
+update(surfaces, level1)
 
 while not quit:
     quit = pygame.event.get(pygame.QUIT)
@@ -87,6 +86,4 @@ while not quit:
     # display first image in cachedeque
     # screen.blit(cachedeque[0], rect)
 
-    update(surfaces)
-
-
+    update(surfaces, level1)
