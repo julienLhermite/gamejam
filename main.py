@@ -38,7 +38,7 @@ screen = pygame.display.set_mode((1440, 874))
 background = Back("bg-excel.png", (0,0), screen, surfaces)
 
 
-level1 = Niveau(10, 7, LEFT, 2, 2)
+level1 = Niveau(10, 7, LEFT, 2, 2, 2)
 
 # Initialisation des bordures du niveau
 for i in range(level1.size + 2):
@@ -59,6 +59,8 @@ for lin in range(level1.size):
             hero = Hero([lin, col], level1, "hero.png", 1, ennemies)
         elif STUPID_GHOST in case:
             StupidGhost([lin, col], level1, "stupid_ghost.png", 1, ennemies)
+        elif GHOST in case:
+            Ghost([lin, col], level1, "ghost.png", 1, ennemies)
 
 clock = pygame.time.Clock()
 last_key_pressed = 0
@@ -101,7 +103,6 @@ while not quit:
         print(hero.pos)
         update(surfaces, level1, ennemies)
 
-        print(GAME_OVER_POS)
         if hero.life == 0:
             Back("game-over.jpg", GAME_OVER_POS, screen, surfaces)
             # display first image in cachedeque
