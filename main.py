@@ -37,7 +37,17 @@ screen = pygame.display.set_mode((1440, 874))
 background = Back("bg-excel.png", (0,0), screen, surfaces)
 
 
-level1 = Niveau(70,7,[0,4])
+level1 = Niveau(10,12,[0,4])
+for i in range(level1.size + 2):
+    if (i == 0) or (i == level1.size+1):
+        for j in range(level1.size+2):
+            print(i,j)
+            Back("bordure.png", (DEP_BORDER_CASE[0]+i*CELL_SIZE[0], DEP_BORDER_CASE[1]+j*CELL_SIZE[1]), screen, surfaces)
+    else:
+        for j in [0, level1.size+1]:
+            print(i, j)
+            Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]), screen,
+                 surfaces)
 
 # Init perso
 perso = Perso(level1, "perso.png")

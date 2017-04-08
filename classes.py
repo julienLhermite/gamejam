@@ -32,24 +32,28 @@ class Perso():
 
     def move(self, dir):
         if (dir == DOWN) and (self.pos[0] < self.struct_size-1):
-            self.struct[self.pos[0]][self.pos[1]].replace("P","")
-            self.pos[0] += 1
-            self.struct[self.pos[0]][self.pos[1]] += "P"
+            if self.struct[self.pos[0]+1][self.pos[1]] != 'M':
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P","")
+                self.pos[0] += 1
+                self.struct[self.pos[0]][self.pos[1]] += "P"
 
         elif (dir == UP) and (self.pos[0] > 0):
-            self.struct[self.pos[0]][self.pos[1]].replace("P","")
-            self.pos[0] -= 1
-            self.struct[self.pos[0]][self.pos[1]] += "P"
+            if self.struct[self.pos[0]-1][self.pos[1]] != 'M':
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P", "")
+                self.pos[0] -= 1
+                self.struct[self.pos[0]][self.pos[1]] += "P"
 
         elif (dir == RIGHT) and (self.pos[1] < self.struct_size-1):
-            self.struct[self.pos[0]][self.pos[1]].replace("P","")
-            self.pos[1] += 1
-            self.struct[self.pos[0]][self.pos[1]] += "P"
+            if self.struct[self.pos[0]][self.pos[1]+1] != 'M':
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P", "")
+                self.pos[1] += 1
+                self.struct[self.pos[0]][self.pos[1]] += "P"
 
         elif (dir == LEFT) and (self.pos[1] > 0):
-            self.struct[self.pos[0]][self.pos[1]].replace("P","")
-            self.pos[1] -= 1
-            self.struct[self.pos[0]][self.pos[1]] += "P"
+            if self.struct[self.pos[0]][self.pos[1]-1] != 'M':
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P","")
+                self.pos[1] -= 1
+                self.struct[self.pos[0]][self.pos[1]] += "P"
 
 class Niveau:
     """Classe permettant de créer un niveau"""
@@ -83,7 +87,7 @@ class Niveau:
         mur = pygame.image.load(os.path.join("images", "case", "mur.png")).convert()
         depart = pygame.image.load(os.path.join("images", "case", "depart.png")).convert()
 
-        print(self.structure)
+        #print(self.structure)
 
         # On parcourt la liste du niveau
         for i_line, line in enumerate(self.structure):
