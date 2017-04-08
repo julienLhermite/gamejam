@@ -120,7 +120,7 @@ while not quit:
 #
 # fond = pygame.image.load(os.path.join("images", "background", "background.png")).convert()
 #
-# hero = Perso("hero", "perso.png", (0,0), 3, fenetre)
+# hero = Perso("hero", "hero.png", (0,0), 3, fenetre)
 #
 #
 # def update():
