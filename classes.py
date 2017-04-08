@@ -26,34 +26,42 @@ class Perso():
             if self.pos:
                 break
             for col in range(len(self.struct[0])):
-                if 'D' in self.struct[lin][col]:
+                if DEPART in self.struct[lin][col]:
                     self.pos = [lin, col]
                     break
 
     def move(self, dir):
+        current_case = self.struct[self.pos[0]][self.pos[1]]
         if (dir == DOWN) and (self.pos[0] < self.struct_size-1):
-            if self.struct[self.pos[0]+1][self.pos[1]] != 'M':
-                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P","")
+            want_to_go_case = self.struct[self.pos[0]+1][self.pos[1]]
+            # si rien n'est tangible sur la case où on veut aller
+            if [chose for chose in want_to_go_case if chose in TANGIBLE] == []:
+                current_case = current_case.replace(HERO,"")
                 self.pos[0] += 1
-                self.struct[self.pos[0]][self.pos[1]] += "P"
+                current_case += HERO
+            # (si y a un mur on le casse un peu
+
 
         elif (dir == UP) and (self.pos[0] > 0):
-            if self.struct[self.pos[0]-1][self.pos[1]] != 'M':
-                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P", "")
+            want_to_go_case = self.struct[self.pos[0]-1][self.pos[1]]
+            if [chose for chose in want_to_go_case if chose in TANGIBLE] == []:
+                current_case = current_case.replace(HERO, "")
                 self.pos[0] -= 1
-                self.struct[self.pos[0]][self.pos[1]] += "P"
+                current_case += HERO
 
         elif (dir == RIGHT) and (self.pos[1] < self.struct_size-1):
-            if self.struct[self.pos[0]][self.pos[1]+1] != 'M':
-                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P", "")
+            want_to_go_case = self.struct[self.pos[0]][self.pos[1]+1]
+            if [chose for chose in want_to_go_case if chose in TANGIBLE] == []:
+                current_case = current_case.replace(HERO, "")
                 self.pos[1] += 1
-                self.struct[self.pos[0]][self.pos[1]] += "P"
+                current_case += HERO
 
         elif (dir == LEFT) and (self.pos[1] > 0):
-            if self.struct[self.pos[0]][self.pos[1]-1] != 'M':
-                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace("P","")
+            want_to_go_case = self.struct[self.pos[0]][self.pos[1]-1]
+            if [chose for chose in want_to_go_case if chose in TANGIBLE] == []:
+                current_case = current_case.replace(HERO,"")
                 self.pos[1] -= 1
-                self.struct[self.pos[0]][self.pos[1]] += "P"
+                current_case += HERO
 
 class Niveau:
     """Classe permettant de créer un niveau"""
@@ -109,13 +117,13 @@ class Niveau:
             for i_cell in range(self.size):
                 print(i_line, i_cell)
                 if random.randrange(100) <= self.ratio_murs:
-                    structure_niveau[i_line][i_cell] = "M"
+                    structure_niveau[i_line][i_cell] = MUR
 
                 if [i_line, i_cell] == self.coord_depart:
-                    structure_niveau[i_line][i_cell] = "DP"
+                    structure_niveau[i_line][i_cell] = DEPART + HERO
 
                 if [i_line, i_cell] in self.coord_sorties:
-                    structure_niveau[i_line][i_cell] = "S"
+                    structure_niveau[i_line][i_cell] = SORTIE
 
             for line in structure_niveau:
                 print(line)
@@ -135,15 +143,15 @@ class Niveau:
             for i_cell, cell in enumerate(line):
                 x = i_cell * CELL_SIZE[0] + DEP_CASE[0]
                 y = i_line * CELL_SIZE[1] + DEP_CASE[1]
-                if "M" in cell:  # M = Mur
+                if MUR in cell:  # M = Mur
                     fenetre.blit(mur, (x, y))
-                if "m" in cell:  # m = Mur cassé
+                if MUR_CASSE in cell:  # m = Mur cassé
                     fenetre.blit(mur_casse, (x, y))
-                if "D" in cell:  # D = Départ
+                if DEPART in cell:  # D = Départ
                     fenetre.blit(depart, (x, y))
-                if "S" in cell:  # S = Sortie
+                if SORTIE in cell:  # S = Sortie
                     fenetre.blit(sortie, (x, y))
-                if 'P' in cell:  # p = perso
+                if HERO in cell:  # p = perso
                     fenetre.blit(perso.surface, (x, y))
 
     def __str__(self):
