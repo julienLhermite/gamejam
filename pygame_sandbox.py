@@ -11,13 +11,6 @@ from pygame.locals import *
 # -time
 
 
-import pygame
-from pygame.locals import *
-import time
-import os
-
-pygame.init()
-
 fenetre = pygame.display.set_mode((1000,500))
 # fenetre = pygame.display.set_mode((1920,1080), FULLSCREEN)
 test = 2+2
