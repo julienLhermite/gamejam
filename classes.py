@@ -63,7 +63,6 @@ class Niveau:
                 print(line)
         self.structure = structure_niveau
 
-
     def afficher(self, fenetre, perso):
         """Méthode permettant d'afficher le niveau en fonction 
         de la liste de structure renvoyée par generer()"""
