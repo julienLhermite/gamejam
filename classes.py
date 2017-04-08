@@ -4,17 +4,15 @@ from const import *
 
 class Perso:
 
-    def __init__(self, name, image_name,  coord, vie_max, parent):
+    def __init__(self, name, image_name,  coord, vie_max, surfaces):
         self.name = name
         self.vie_max = vie_max
         self.vie = vie_max
 
-        self.parent = parent
         self.sprite = pygame.image.load(os.path.join("images", "case", image_name)).convert()
+        surfaces.append(self.sprite)
         self.rect = self.sprite.get_rect()
-        self.rect = self.rect.move(50, 50)
-
-
+        self.rect = self.rect.move(coord)
 
     def move(self, dir):
         if dir == DOWN:
