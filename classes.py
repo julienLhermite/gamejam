@@ -52,7 +52,6 @@ class Perso():
 class Niveau:
     """Classe permettant de créer un niveau"""
 
-
     def __init__(self, ratio_murs, size, direction_in):
         self.size = size
         self.ratio_murs = ratio_murs
@@ -123,6 +122,7 @@ class Niveau:
         """Méthode permettant d'afficher le niveau en fonction 
         de la liste de structure renvoyée par generer()"""
         mur = pygame.image.load(os.path.join("images", "case", "mur.png")).convert()
+        mur_casse = pygame.image.load(os.path.join("images", "case", "mur_casse.png")).convert()
         depart = pygame.image.load(os.path.join("images", "case", "depart.png")).convert()
         sortie = pygame.image.load(os.path.join("images", "case", "sortie.png")).convert()
 
@@ -134,6 +134,8 @@ class Niveau:
                 y = i_line * CELL_SIZE[1] + DEP_CASE[1]
                 if "M" in cell:  # M = Mur
                     fenetre.blit(mur, (x, y))
+                if "m" in cell:  # m = Mur cassé
+                    fenetre.blit(mur_casse, (x, y))
                 if "D" in cell:  # D = Départ
                     fenetre.blit(depart, (x, y))
                 if "S" in cell:  # S = Sortie
