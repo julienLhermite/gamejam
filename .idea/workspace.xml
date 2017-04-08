@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="71c455e2-7483-42ac-8317-dc396994f93b" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pygame_sandbox.py" afterPath="$PROJECT_DIR$/pygame_sandbox.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sandbox_julien.py" afterPath="$PROJECT_DIR$/sandbox_julien.py" />
     </list>
     <ignored path="GameJam.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -455,6 +453,14 @@
       <option name="presentableId" value="Default" />
       <updated>1491640492634</updated>
     </task>
+    <task id="LOCAL-00001" summary="yolo&#10;">
+      <created>1491656915328</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1491656915328</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -511,6 +517,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="yolo&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="yolo&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
