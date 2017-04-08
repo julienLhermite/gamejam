@@ -11,22 +11,64 @@ from pygame.locals import *
 # -time
 
 
-# initialise les modules pygame
+import pygame
+from pygame.locals import *
+import time
+import os
+
 pygame.init()
 
-# renvoie un objet de classe surface, pour l'instant surface vierge donc noir
-# fenetre = pygame.display.set_mode((640, 480))
-fenetre = pygame.display.set_mode((640, 480), FULLSCREEN)
+fenetre = pygame.display.set_mode((1000,500))
+# fenetre = pygame.display.set_mode((1920,1080), FULLSCREEN)
+test = 2+2
 
-fond = pygame.image.load("background.bmp")
-# fond = pygame.image.load("background.bmp").convert()
-
-fenetre.blit(fond, (0,0))
-# Variable qui continue la boucle si = 1, stoppe si = 0
-continuer = 1
-
-# Boucle infinie
-while continuer:
-    continue
+fond = pygame.image.load(os.path.join("images", "background", "background.png")).convert()
 
 
+
+perso = pygame.image.load("perso.png").convert()
+perso.set_colorkey((255,255,255))
+position_perso = perso.get_rect()
+position_perso = position_perso.move(150, 100)
+
+
+def update():
+    fenetre.blit(fond, (0,0))
+
+    fenetre.blit(perso, position_perso)
+    pygame.display.flip()
+
+
+update()
+start_time = time.time()
+
+game_on = True
+pygame.key.set_repeat(30, 30)
+
+while game_on:
+    for event in pygame.event.get():
+        if event.type == KEYDOWN:
+            if event.key == K_DOWN:
+                print("down")
+                position_perso = position_perso.move(0, 3)
+            if event.key == K_UP:
+                print("up")
+                position_perso = position_perso.move(0, -3)
+            if event.key == K_LEFT:
+                print("left")
+                position_perso = position_perso.move(-3, 0)
+            if event.key == K_RIGHT:
+                print("right")
+                position_perso = position_perso.move(3, 0)
+
+            keys = pygame.key.get_pressed()
+
+
+
+
+
+
+
+        if event.type == QUIT:
+            game_on = False
+    update()
