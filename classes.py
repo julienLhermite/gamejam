@@ -31,37 +31,49 @@ class Perso():
                     break
 
     def move(self, dir):
-        current_case = self.struct[self.pos[0]][self.pos[1]]
         if (dir == DOWN) and (self.pos[0] < self.struct_size-1):
-            want_to_go_case = self.struct[self.pos[0]+1][self.pos[1]]
             # si rien n'est tangible sur la case où on veut aller
-            if [chose for chose in want_to_go_case if chose in TANGIBLE] == []:
-                current_case = current_case.replace(HERO,"")
+            if [chose for chose in self.struct[self.pos[0]+1][self.pos[1]] if chose in TANGIBLE] == []:
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(HERO,"")
                 self.pos[0] += 1
-                current_case += HERO
-            # (si y a un mur on le casse un peu
+                self.struct[self.pos[0]][self.pos[1]] += HERO
+            # (si y a un mur on le casse un peu)
+            elif MUR in self.struct[self.pos[0]+1][self.pos[1]]:
+                self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR,MUR_CASSE)
+            elif MUR_CASSE in self.struct[self.pos[0]+1][self.pos[1]]:
+                self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR_CASSE,"")
 
 
         elif (dir == UP) and (self.pos[0] > 0):
-            want_to_go_case = self.struct[self.pos[0]-1][self.pos[1]]
-            if [chose for chose in want_to_go_case if chose in TANGIBLE] == []:
-                current_case = current_case.replace(HERO, "")
+            if [chose for chose in self.struct[self.pos[0]-1][self.pos[1]] if chose in TANGIBLE] == []:
+                self.struct[self.pos[0]][self.pos[1]] =  self.struct[self.pos[0]][self.pos[1]].replace(HERO, "")
                 self.pos[0] -= 1
-                current_case += HERO
+                self.struct[self.pos[0]][self.pos[1]] += HERO
+            elif MUR in self.struct[self.pos[0]-1][self.pos[1]]:
+                self.struct[self.pos[0] - 1][self.pos[1]] = self.struct[self.pos[0]-1][self.pos[1]].replace(MUR,MUR_CASSE)
+            elif MUR_CASSE in self.struct[self.pos[0]-1][self.pos[1]]:
+                self.struct[self.pos[0] - 1][self.pos[1]] = self.struct[self.pos[0]-1][self.pos[1]].replace(MUR_CASSE,"")
 
         elif (dir == RIGHT) and (self.pos[1] < self.struct_size-1):
-            want_to_go_case = self.struct[self.pos[0]][self.pos[1]+1]
-            if [chose for chose in want_to_go_case if chose in TANGIBLE] == []:
-                current_case = current_case.replace(HERO, "")
+
+            if [chose for chose in self.struct[self.pos[0]][self.pos[1]+1] if chose in TANGIBLE] == []:
+                self.struct[self.pos[0]][self.pos[1]] =  self.struct[self.pos[0]][self.pos[1]].replace(HERO, "")
                 self.pos[1] += 1
-                current_case += HERO
+                self.struct[self.pos[0]][self.pos[1]] += HERO
+            elif MUR in self.struct[self.pos[0]][self.pos[1]+1]:
+                self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR,MUR_CASSE)
+            elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]+1]:
+                self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR_CASSE,"")
 
         elif (dir == LEFT) and (self.pos[1] > 0):
-            want_to_go_case = self.struct[self.pos[0]][self.pos[1]-1]
-            if [chose for chose in want_to_go_case if chose in TANGIBLE] == []:
-                current_case = current_case.replace(HERO,"")
+            if [chose for chose in self.struct[self.pos[0]][self.pos[1]-1] if chose in TANGIBLE] == []:
+                self.struct[self.pos[0]][self.pos[1]] =  self.struct[self.pos[0]][self.pos[1]].replace(HERO,"")
                 self.pos[1] -= 1
-                current_case += HERO
+                self.struct[self.pos[0]][self.pos[1]] += HERO
+            elif MUR in self.struct[self.pos[0]][self.pos[1]-1]:
+                self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR,MUR_CASSE)
+            elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]-1]:
+                self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR_CASSE,"")
 
 class Niveau:
     """Classe permettant de créer un niveau"""

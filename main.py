@@ -37,7 +37,7 @@ screen = pygame.display.set_mode((1440, 874))
 background = Back("bg-excel.png", (0,0), screen, surfaces)
 
 
-level1 = Niveau(70,7,LEFT)
+level1 = Niveau(40,7,LEFT)
 level1.set_out(2)
 level1.generer()
 
