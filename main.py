@@ -25,6 +25,7 @@ def update(liste, niveau, ennemies):
 
     niveau.afficher(screen, hero, ennemies)
     print(str(niveau))
+    print(ennemies)
     pygame.display.flip()
 
 pygame.init()
@@ -55,9 +56,9 @@ for lin in range(level1.size):
     for col in range(level1.size):
         case = level1.structure[lin][col]
         if DEPART in case:
-            hero = Hero([lin, col], level1, "hero.png")
+            hero = Hero([lin, col], level1, "hero.png", 1, ennemies)
         elif STUPID_GHOST in case:
-            ennemies.append(StupidGhost([lin, col], level1, "stupid_ghost.png"))
+            StupidGhost([lin, col], level1, "stupid_ghost.png", 1, ennemies)
 
 clock = pygame.time.Clock()
 last_key_pressed = 0
@@ -97,13 +98,13 @@ while not quit:
         for ennemy in ennemies:
             ennemy.move(hero)
 
-        if hero.life == 0:
-            Back("game-over.jpg", DEP_BORDER_CASE, screen, surfaces)
-
         print(hero.pos)
         update(surfaces, level1, ennemies)
 
-    # display first image in cachedeque
-    # screen.blit(cachedeque[0], rect)
+        print(GAME_OVER_POS)
+        if hero.life == 0:
+            Back("game-over.jpg", GAME_OVER_POS, screen, surfaces)
+            # display first image in cachedeque
+            # screen.blit(cachedeque[0], rect)
 
 

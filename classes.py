@@ -6,6 +6,23 @@ import random
 random.seed()
 
 
+def find_ennemy_at(ennemies, pos):
+    ennemy_at = []
+    for ennemy in ennemies:
+        if ennemy.pos == pos :
+            ennemy_at.append(ennemy)
+    return ennemy_at
+
+
+def find_ennemy_at_with_type(ennemies, ennemy_type, pos):
+    ennemy_at_with = []
+    for ennemy in ennemies:
+        if (ennemy.pos == pos) and (ennemy_type == ennemy.type):
+            ennemy_at_with.append(ennemy)
+    return ennemy_at_with
+
+
+
 class Back:
     def __init__(self, image_name, coord, screen, surfaces):
         self.surface = pygame.image.load(os.path.join("images", "background", image_name)).convert()
@@ -15,18 +32,18 @@ class Back:
         surfaces.append(self)
 
 class Personnage():
-    def __init__(self, coord, niveau, image_name):
+    def __init__(self, coord, niveau, image_name, life, ennemies):
         self.surface = pygame.image.load(os.path.join("images", "case", image_name)).convert()
         self.struct = niveau.structure
         self.struct_size = niveau.size
         self.pos = coord
-
+        self.life = life
+        self.ennemies = ennemies
 
 class Hero(Personnage):
 
-    def __init__(self, coord, niveau, image_name):
-        super().__init__( coord, niveau, image_name)
-        self.life = 1
+    def __init__(self, coord, niveau, image_name, life, ennemies):
+        super().__init__(coord, niveau, image_name, life, ennemies)
 
     def move(self, dir):
         if (dir == DOWN) and (self.pos[0] < self.struct_size-1):
@@ -41,6 +58,12 @@ class Hero(Personnage):
             elif MUR_CASSE in self.struct[self.pos[0]+1][self.pos[1]]:
                 self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR_CASSE,"")
 
+            # si il y a un ennemy
+            ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] + 1, self.pos[1]]]
+            if ennemies_at != []:
+                for ennemy in ennemies_at:
+                    ennemy.update_life(-1)
+
 
         elif (dir == UP) and (self.pos[0] > 0):
             if [chose for chose in self.struct[self.pos[0]-1][self.pos[1]] if chose in TANGIBLE] == []:
@@ -52,6 +75,12 @@ class Hero(Personnage):
             elif MUR_CASSE in self.struct[self.pos[0]-1][self.pos[1]]:
                 self.struct[self.pos[0] - 1][self.pos[1]] = self.struct[self.pos[0]-1][self.pos[1]].replace(MUR_CASSE,"")
 
+            # si il y a un ennemy
+            ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] - 1, self.pos[1]]]
+            if ennemies_at != []:
+                for ennemy in ennemies_at:
+                    ennemy.update_life(-1)
+
         elif (dir == RIGHT) and (self.pos[1] < self.struct_size-1):
 
             if [chose for chose in self.struct[self.pos[0]][self.pos[1]+1] if chose in TANGIBLE] == []:
@@ -62,6 +91,11 @@ class Hero(Personnage):
                 self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR,MUR_CASSE)
             elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]+1]:
                 self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR_CASSE,"")
+            # si il y a un ennemy
+            ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]+1]]
+            if ennemies_at != []:
+                for ennemy in ennemies_at:
+                    ennemy.update_life(-1)
 
         elif (dir == LEFT) and (self.pos[1] > 0):
             if [chose for chose in self.struct[self.pos[0]][self.pos[1]-1] if chose in TANGIBLE] == []:
@@ -72,13 +106,22 @@ class Hero(Personnage):
                 self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR,MUR_CASSE)
             elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]-1]:
                 self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR_CASSE,"")
+            # si il y a un ennemy
+            ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]-1]]
+            if ennemies_at != []:
+                for ennemy in ennemies_at:
+                    ennemy.update_life(-1)
+
+    def update_life(self, diff):
+        self.life += diff
 
 
 class StupidGhost(Personnage):
 
-    def __init__(self, coord, niveau, image_name):
-        super().__init__( coord, niveau, image_name)
+    def __init__(self, coord, niveau, image_name, life, ennemies):
+        super().__init__(coord, niveau, image_name, life, ennemies)
         self.type = STUPID_GHOST
+        self.ennemies.append(self)
 
     def move(self, hero):
         mvt_possible = [(0, 1), (0, -1), (1, 0), (-1, 0)]
@@ -97,13 +140,17 @@ class StupidGhost(Personnage):
         self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(STUPID_GHOST, "")
 
         if hero.pos == [self.pos[0]+mvt[0], self.pos[1]+mvt[1]]:
-            hero.life -= 1
+            hero.update_life(-1)
         self.pos[0] += mvt[0]
         self.pos[1] += mvt[1]
 
         self.struct[self.pos[0]][self.pos[1]] += STUPID_GHOST
 
-
+    def update_life(self, diff):
+        self.life += diff
+        if self.life <= 0:
+            self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(STUPID_GHOST, "")
+            self.ennemies.remove(self)
 
 
 
@@ -210,9 +257,8 @@ class Niveau:
                 if HERO in cell:  # p = perso
                     fenetre.blit(hero.surface, (x, y))
                 if STUPID_GHOST in cell:
-                    for ennemy in ennemies:
-                        if ennemy.type == STUPID_GHOST and ennemy.pos == [i_line, i_cell]:
-                            fenetre.blit(ennemy.surface, (x, y))
+                    for ennemy in find_ennemy_at_with_type(ennemies, STUPID_GHOST, [i_line, i_cell]):
+                        fenetre.blit(ennemy.surface, (x, y))
 
     def __str__(self):
         return("\n".join([str(ligne) for ligne in self.structure]))
