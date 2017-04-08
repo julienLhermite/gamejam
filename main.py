@@ -43,11 +43,9 @@ level1 = Niveau(10, 7, LEFT, 2, 2)
 for i in range(level1.size + 2):
     if (i == 0) or (i == level1.size+1):
         for j in range(level1.size+2):
-            print(i,j)
             Back("bordure.png", (DEP_BORDER_CASE[0]+i*CELL_SIZE[0], DEP_BORDER_CASE[1]+j*CELL_SIZE[1]), screen, surfaces)
     else:
         for j in [0, level1.size+1]:
-            print(i, j)
             Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]), screen,
                  surfaces)
 
@@ -61,7 +59,6 @@ for lin in range(level1.size):
         elif STUPID_GHOST in case:
             ennemies.append(StupidGhost([lin, col], level1, "stupid_ghost.png"))
 
-print(surfaces)
 clock = pygame.time.Clock()
 last_key_pressed = 0
 
@@ -97,6 +94,12 @@ while not quit:
         last_key_pressed = time.time()
         print(hero.pos)
         hero.move(dir)
+        for ennemy in ennemies:
+            ennemy.move(hero)
+
+        if hero.life == 0:
+            Back("game-over.jpg", DEP_BORDER_CASE, screen, surfaces)
+
         print(hero.pos)
         update(surfaces, level1, ennemies)
 

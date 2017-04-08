@@ -21,10 +21,12 @@ class Personnage():
         self.struct_size = niveau.size
         self.pos = coord
 
+
 class Hero(Personnage):
 
     def __init__(self, coord, niveau, image_name):
         super().__init__( coord, niveau, image_name)
+        self.life = 1
 
     def move(self, dir):
         if (dir == DOWN) and (self.pos[0] < self.struct_size-1):
@@ -78,14 +80,38 @@ class StupidGhost(Personnage):
         super().__init__( coord, niveau, image_name)
         self.type = STUPID_GHOST
 
-    def move(self):
-        pass
+    def move(self, hero):
+        mvt_possible = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        if self.pos[0] == 0:
+            mvt_possible.remove((-1, 0))
+        elif self.pos[0] == self.struct_size - 1:
+            mvt_possible.remove((1, 0))
+
+        if self.pos[1] == 0:
+            mvt_possible.remove((0, -1))
+        elif self.pos[1] == self.struct_size - 1:
+            mvt_possible.remove((0, 1))
+
+        mvt = mvt_possible[random.randrange(len(mvt_possible))]
+
+        self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(STUPID_GHOST, "")
+
+        if hero.pos == [self.pos[0]+mvt[0], self.pos[1]+mvt[1]]:
+            hero.life -= 1
+        self.pos[0] += mvt[0]
+        self.pos[1] += mvt[1]
+
+        self.struct[self.pos[0]][self.pos[1]] += STUPID_GHOST
+
+
+
+
 
 
 class Niveau:
     """Classe permettant de créer un niveau"""
 
-    def __init__(self, ratio_murs, size, direction_in,nb_out, nb_stupid_ghost):
+    def __init__(self, ratio_murs, size, direction_in, nb_out, nb_stupid_ghost):
         self.size = size
         self.ratio_murs = ratio_murs
         self.direction_in = direction_in
@@ -103,8 +129,8 @@ class Niveau:
             self.coord_depart = [random_depart, 0]
 
         self.position_busy = [self.coord_depart]
-        self.generer()
         self.set_out(nb_out)
+        self.generer()
         self.set_stupid_ghost(nb_stupid_ghost)
 
 
@@ -148,7 +174,6 @@ class Niveau:
 
         for i_line in range(self.size):
             for i_cell in range(self.size):
-                print(i_line, i_cell)
                 if random.randrange(100) <= self.ratio_murs:
                     structure_niveau[i_line][i_cell] = MUR
 
@@ -158,8 +183,6 @@ class Niveau:
                 if [i_line, i_cell] in self.coord_sorties:
                     structure_niveau[i_line][i_cell] = SORTIE
 
-            for line in structure_niveau:
-                print(line)
         self.structure = structure_niveau
 
     def afficher(self, fenetre, hero, ennemies):
