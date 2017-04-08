@@ -14,7 +14,9 @@ class Back:
         self.rect = self.rect.move(coord[0], coord[1])
         surfaces.append(self)
 
+
 class Perso():
+
     def __init__(self, niveau, image_name):
         self.surface = pygame.image.load(os.path.join("images", "case", image_name)).convert()
         self.struct = niveau.structure
@@ -69,8 +71,6 @@ class Niveau:
         elif direction_in == LEFT:
             self.coord_depart = [random_depart, 0]
 
-
-
     def set_out(self, nb_out):
         """
         ajoute nb_out sorties, (1 ou 2)
@@ -112,7 +112,6 @@ class Niveau:
 
                 if [i_line, i_cell] in self.coord_sorties:
                     structure_niveau[i_line][i_cell] = "S"
-
 
             for line in structure_niveau:
                 print(line)
