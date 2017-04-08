@@ -39,27 +39,32 @@ start_time = time.time()
 
 game_on = True
 
-while game_on:
-    for event in pygame.event.get():
-        if event.type == KEYDOWN:
-            if event.key == K_DOWN:
-                print("down")
-                position_perso = position_perso.move(0, 3)
-            if event.key == K_UP:
-                print("up")
-                position_perso = position_perso.move(0, -3)
-            if event.key == K_LEFT:
-                print("left")
-                position_perso = position_perso.move(-3, 0)
-            if event.key == K_RIGHT:
-                print("right")
-                position_perso = position_perso.move(3, 0)
+while not game_on:
+    quit = pygame.event.get(pygame.QUIT)
+    pygame.event.poll()
+
+    # state of the keys
+    keys = pygame.key.get_pressed()
+
+    # filter for the keys we're interessted in
+    pressed = ((key, _) for (key, _) in moves.items() if keys[key])
+    key, (cache, dir) = next(pressed, (None, (None, None)))
+
+    # if a key of the 'moves' dict is pressed:
+    if key:
+        # if we change the direction, we need another animation
+        print(key)
+        if state != key:
+            cachedeque = deque(cache)
+            state = key
+        # move the square
+        rect.move_ip(dir)
+    else:
+        state = None
+
+    fenetre.fill(pygame.color.Color('green'))
+
+    # display first image in cachedeque
+    fenetre.blit(cachedeque[0], rect)
 
 
-
-
-
-
-        if event.type == QUIT:
-            game_on = False
-    update()

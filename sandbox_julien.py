@@ -1,4 +1,5 @@
 import pygame
+import time
 from collections import deque
 
 pygame.init()
@@ -33,8 +34,9 @@ while not quit:
     pygame.event.poll()
 
     # state of the keys
+    pygame.key.set_repeat()
     keys = pygame.key.get_pressed()
-
+    # print(keys)
     # filter for the keys we're interessted in
     pressed = ((key, _) for (key, _) in moves.items() if keys[key])
     key, (cache, dir) = next(pressed, (None, (None, None)))
@@ -42,11 +44,13 @@ while not quit:
     # if a key of the 'moves' dict is pressed:
     if key:
         # if we change the direction, we need another animation
+        print(key)
         if state != key:
             cachedeque = deque(cache)
             state = key
         # move the square
         rect.move_ip(dir)
+        a = 0
     else:
         state = None
 
@@ -57,9 +61,9 @@ while not quit:
 
     # rotate cachedeque to the left, so the second image becomes the first
     # do this three times a second:
-    if state and timer >= 1000./3:
-        cachedeque.rotate(-1)
-        timer = 0
+    # if state and timer >= 1000./3:
+    #     cachedeque.rotate(-1)
+    #     timer = 0
 
     # call flip() and tick() only once per frame
     pygame.display.flip()
