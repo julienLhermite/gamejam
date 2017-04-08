@@ -132,9 +132,6 @@ class Ghost(Personnage):
             self.pos[1] += mvt[1]
         self.struct[self.pos[0]][self.pos[1]] += GHOST
 
-
-
-
 class Niveau:
     """Classe permettant de créer un niveau"""
 
