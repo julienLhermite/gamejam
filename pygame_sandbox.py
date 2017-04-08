@@ -17,10 +17,10 @@ fenetre = pygame.display.set_mode((1000,500))
 # fenetre = pygame.display.set_mode((1920,1080), FULLSCREEN)
 test = 2+2
 
-fond = pygame.image.load(os.path.join("images", "background", "background.png")).convert()
+fond = pygame.image.load(os.path.join("images", "background", "background.png")).convert_alpha()
 
 
-perso = pygame.image.load(os.path.join("images", "case", "hero.png")).convert()
+perso = pygame.image.load(os.path.join("images", "case", "hero.png")).convert_alpha()
 perso.set_colorkey((255,255,255))
 position_perso = perso.get_rect()
 position_perso = position_perso.move(150, 100)

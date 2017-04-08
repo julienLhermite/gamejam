@@ -25,7 +25,7 @@ def find_ennemy_at_with_type(ennemies, ennemy_type, pos):
 
 class Back:
     def __init__(self, image_name, coord, screen, surfaces):
-        self.surface = pygame.image.load(os.path.join("images", "background", image_name)).convert()
+        self.surface = pygame.image.load(os.path.join("images", "background", image_name)).convert_alpha()
         self.screen = screen
         self.rect = self.surface.get_rect()
         self.rect = self.rect.move(coord[0], coord[1])
@@ -33,7 +33,7 @@ class Back:
 
 class Personnage():
     def __init__(self, coord, niveau, image_name, life, ennemies):
-        self.surface = pygame.image.load(os.path.join("images", "case", image_name)).convert()
+        self.surface = pygame.image.load(os.path.join("images", "case", image_name)).convert_alpha()
         self.struct = niveau.structure
         self.struct_size = niveau.size
         self.pos = coord
@@ -176,7 +176,7 @@ class Ghost(Personnage):
         self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(GHOST, "")
 
         if hero.pos == [self.pos[0]+mvt[0], self.pos[1]+mvt[1]]:
-            hero.life -= 1
+            hero.update_life(-1)
         # on maj si y a vraiment rien de tangible en face
         elif [chose for chose in self.struct[self.pos[0]+mvt[0]][self.pos[1]+mvt[1]] if chose in TANGIBLE_FOR_GHOST] == []:
             self.pos[0] += mvt[0]
@@ -186,7 +186,7 @@ class Ghost(Personnage):
     def update_life(self, diff):
         self.life += diff
         if self.life <= 0:
-            self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(STUPID_GHOST, "")
+            self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(self.type, "")
             self.ennemies.remove(self)
 
 class Niveau:
@@ -278,10 +278,10 @@ class Niveau:
     def afficher(self, fenetre, hero, ennemies):
         """Méthode permettant d'afficher le niveau en fonction 
         de la liste de structure renvoyée par generer()"""
-        mur = pygame.image.load(os.path.join("images", "case", "mur.png")).convert()
-        mur_casse = pygame.image.load(os.path.join("images", "case", "mur_casse.png")).convert()
-        depart = pygame.image.load(os.path.join("images", "case", "depart.png")).convert()
-        sortie = pygame.image.load(os.path.join("images", "case", "sortie.png")).convert()
+        mur = pygame.image.load(os.path.join("images", "case", "mur.png")).convert_alpha()
+        mur_casse = pygame.image.load(os.path.join("images", "case", "mur_casse.png")).convert_alpha()
+        depart = pygame.image.load(os.path.join("images", "case", "depart.png")).convert_alpha()
+        sortie = pygame.image.load(os.path.join("images", "case", "sortie.png")).convert_alpha()
 
         # On parcourt la liste du niveau
         for i_line, line in enumerate(self.structure):

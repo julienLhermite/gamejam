@@ -118,7 +118,7 @@ while not quit:
 # fenetre = pygame.display.set_mode((1920,1080))
 # # fenetre = pygame.display.set_mode((1920,1080), FULLSCREEN)
 #
-# fond = pygame.image.load(os.path.join("images", "background", "background.png")).convert()
+# fond = pygame.image.load(os.path.join("images", "background", "background.png")).convert_alpha()
 #
 # hero = Perso("hero", "hero.png", (0,0), 3, fenetre)
 #
