@@ -54,9 +54,20 @@ moves = {pygame.K_LEFT:  (walk_left,  (-2, 0)),
          pygame.K_UP: (walk_up, (0, -2)),
          pygame.K_DOWN: (walk_down, (0, 2))}
 
+level = Niveau(ratio_murs=65, size=7, coord_depart=[0,4])
+print(level.structure)
+
 while not quit:
     quit = pygame.event.get(pygame.QUIT)
     pygame.event.poll()
+
+
+
+
+    level.afficher(screen)
+
+
+
 
     # state of the keys
     keys = pygame.key.get_pressed()

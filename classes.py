@@ -1,6 +1,9 @@
 import os
 import pygame
 from const import *
+import random
+
+random.seed()
 
 class Perso:
 
@@ -38,23 +41,21 @@ class Niveau:
         self.ratio_mur = ratio_murs
 
 
-    def generer(self):
-        """Méthode permettant de générer le niveau en fonction du fichier.
-        On crée une liste générale, contenant une liste par ligne à afficher"""
-        # On ouvre le fichier
-        structure_niveau = [[[]]* size ] * size
-        # On parcourt les lignes du fichier
-        for ligne in fichier:
-            ligne_niveau = []
-            # On parcourt les sprites (lettres) contenus dans le fichier
-            for sprite in ligne:
-                # On ignore les "\n" de fin de ligne
-                if sprite != '\n':
-                    # On ajoute le sprite à la liste de la ligne
-                    ligne_niveau.append(sprite)
-            # On ajoute la ligne à la liste du niveau
-            structure_niveau.append(ligne_niveau)
-        # On sauvegarde cette structure
+        structure_niveau = [["" for i in range(size)] for j in range(size)]
+
+        for i_line in range(size):
+            for i_cell in range(size):
+                print(i_line, i_cell)
+                if random.randrange(100) <= ratio_murs:
+                    structure_niveau[i_line][i_cell] = "M"
+
+                if [i_line, i_cell] == coord_depart:
+                    print("ici!!!!!!!!!!!!!!!!")
+                    structure_niveau[i_line][i_cell] = "DP"
+
+
+
+            print(structure_niveau)
         self.structure = structure_niveau
 
 
@@ -67,22 +68,18 @@ class Niveau:
         arrivee = pygame.image.load(os.path.join("images", "case", "arrivee.png")).convert_alpha()
 
         # On parcourt la liste du niveau
-        num_ligne = 0
-        for ligne in self.structure:
+        for i_line, line in enumerate(self.structure):
             # On parcourt les listes de lignes
-            num_case = 0
-            for sprite in ligne:
-                # On calcule la position réelle en pixels
-                x = num_case * taille_sprite
-                y = num_ligne * taille_sprite
-                if sprite == 'm':  # m = Mur
+            for i_cell, cell in enumerate(line):
+                x = i_cell * SPRITE_SIZE + FIRST_CELL_X
+                y = i_line * SPRITE_SIZE + FIRST_CELL_Y
+                if "M" in cell:  # m = Mur
                     fenetre.blit(mur, (x, y))
-                elif sprite == 'd':  # d = Départ
+                if "D" in cell:  # d = Départ
                     fenetre.blit(depart, (x, y))
-                elif sprite == 'a':  # a = Arrivée
+                if 'P' in cell:  # p = perso
                     fenetre.blit(arrivee, (x, y))
-                num_case += 1
-            num_ligne += 1
+
 
 
 
