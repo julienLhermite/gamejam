@@ -23,22 +23,26 @@ def update(liste):
 
     for papa in liste:
 
+
         papa.screen.blit(papa.surface, papa.rect)
 
     pygame.display.flip()
 
 pygame.init()
 
-# set window and background
-screen = pygame.display.set_mode((1440, 874))
-background = pygame.image.load(os.path.join("images", "background", "bg-excel.png")).convert()
 
 
 # list of surfaces
 surfaces = []
 
+# set window and background
+screen = pygame.display.set_mode((1440, 874))
+background = Back("bg-excel.png", (0,0), screen, surfaces)
+
+
+
 # Init perso
-perso = Perso("joueur1", "perso.png", (50, 50), 12, surfaces)
+perso = Perso("perso.png", (150, 100), screen, surfaces)
 
 print(surfaces)
 clock = pygame.time.Clock()

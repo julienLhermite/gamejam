@@ -9,11 +9,21 @@ class Papa:
     def __init__(self, image_name, coord, screen, surfaces):
         self.surface = pygame.image.load(os.path.join("images", "case", image_name)).convert()
         self.screen = screen
-        self.rect = self.sprite.get_rect()
+        self.rect = self.surface.get_rect()
         self.rect = self.rect.move(coord[0], coord[1])
         surfaces.append(self)
 
+class Back:
+    def __init__(self, image_name, coord, screen, surfaces):
+        self.surface = pygame.image.load(os.path.join("images", "background", image_name)).convert()
+        self.screen = screen
+        self.rect = self.surface.get_rect()
+        self.rect = self.rect.move(coord[0], coord[1])
+        surfaces.append(self)
 class Perso(Papa):
+
+    def __init__(self, image_name, coord, screen, surfaces):
+        Papa.__init__(self, image_name, coord, screen, surfaces)
 
     def move(self, dir):
         if dir == DOWN:
