@@ -20,7 +20,7 @@ test = 2+2
 fond = pygame.image.load(os.path.join("images", "background", "background.png")).convert()
 
 
-perso = pygame.image.load(os.path.join("images", "case", "perso.png")).convert()
+perso = pygame.image.load(os.path.join("images", "case", "hero.png")).convert()
 perso.set_colorkey((255,255,255))
 position_perso = perso.get_rect()
 position_perso = position_perso.move(150, 100)

@@ -19,11 +19,11 @@ import os
 from classes import *
 
 
-def update(liste, niveau):
+def update(liste, niveau, ennemies):
     for image in liste:
         image.screen.blit(image.surface, image.rect)
 
-    niveau.afficher(screen, perso)
+    niveau.afficher(screen, hero, ennemies)
     print(str(niveau))
     pygame.display.flip()
 
@@ -37,10 +37,9 @@ screen = pygame.display.set_mode((1440, 874))
 background = Back("bg-excel.png", (0,0), screen, surfaces)
 
 
-level1 = Niveau(70,7,LEFT)
-level1.set_out(2)
-level1.generer()
+level1 = Niveau(10, 7, LEFT, 2, 2)
 
+# Initialisation des bordures du niveau
 for i in range(level1.size + 2):
     if (i == 0) or (i == level1.size+1):
         for j in range(level1.size+2):
@@ -52,8 +51,15 @@ for i in range(level1.size + 2):
             Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]), screen,
                  surfaces)
 
-# Init perso
-perso = Perso(level1, "perso.png")
+# Init Personnage
+ennemies = []
+for lin in range(level1.size):
+    for col in range(level1.size):
+        case = level1.structure[lin][col]
+        if DEPART in case:
+            hero = Hero([lin, col], level1, "hero.png")
+        elif STUPID_GHOST in case:
+            ennemies.append(StupidGhost([lin, col], level1, "stupid_ghost.png"))
 
 print(surfaces)
 clock = pygame.time.Clock()
@@ -71,7 +77,7 @@ moves = {pygame.K_LEFT:  LEFT,
          pygame.K_DOWN: DOWN}
 
 
-update(surfaces, level1)
+update(surfaces, level1, ennemies)
 
 while not quit:
     quit = pygame.event.get(pygame.QUIT)
@@ -89,10 +95,10 @@ while not quit:
         # if we change the direction, we need another animation
         print(dir)
         last_key_pressed = time.time()
-        print(perso.pos)
-        perso.move(dir)
-        print(perso.pos)
-        update(surfaces, level1)
+        print(hero.pos)
+        hero.move(dir)
+        print(hero.pos)
+        update(surfaces, level1, ennemies)
 
     # display first image in cachedeque
     # screen.blit(cachedeque[0], rect)
