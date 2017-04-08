@@ -1,4 +1,6 @@
 import pygame
+import os
+import time
 from pygame.locals import *
 
 # elmt de la bibliothèque
@@ -36,7 +38,6 @@ update()
 start_time = time.time()
 
 game_on = True
-pygame.key.set_repeat(30, 30)
 
 while game_on:
     for event in pygame.event.get():
@@ -53,9 +54,6 @@ while game_on:
             if event.key == K_RIGHT:
                 print("right")
                 position_perso = position_perso.move(3, 0)
-
-            keys = pygame.key.get_pressed()
-
 
 
 
