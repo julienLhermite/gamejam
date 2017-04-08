@@ -14,9 +14,7 @@ class Back:
         self.rect = self.rect.move(coord[0], coord[1])
         surfaces.append(self)
 
-
 class Perso():
-
     def __init__(self, niveau, image_name):
         self.surface = pygame.image.load(os.path.join("images", "case", image_name)).convert()
         self.struct = niveau.structure
@@ -55,22 +53,66 @@ class Niveau:
     """Classe permettant de créer un niveau"""
 
 
-    def __init__(self, ratio_murs, size, coord_depart):
+    def __init__(self, ratio_murs, size, direction_in):
         self.size = size
-        self.coord_depart = (coord_depart)
-        self.ratio_mur = ratio_murs
+        self.ratio_murs = ratio_murs
+        self.direction_in = direction_in
+        self.coord_sorties = []
 
-        structure_niveau = [["" for i in range(size)] for j in range(size)]
+        # choix de la coord de départ
+        random_depart = random.randrange(1,size-1)
+        if direction_in == UP:
+            self.coord_depart = [0, random_depart]
+        elif direction_in == DOWN:
+            self.coord_depart = [size-1, random_depart]
+        elif direction_in == RIGHT:
+            self.coord_depart = [random_depart, size - 1]
+        elif direction_in == LEFT:
+            self.coord_depart = [random_depart, 0]
 
-        for i_line in range(size):
-            for i_cell in range(size):
+
+
+    def set_out(self, nb_out):
+        """
+        ajoute nb_out sorties, (1 ou 2)
+        """
+        if nb_out > 0:
+            random_out1 = random.randrange(1, self.size - 1)
+            if self.direction_in == UP:
+                self.coord_sorties.append([self.size - 1, random_out1])
+            if self.direction_in == DOWN:
+                self.coord_sorties.append([0, random_out1])
+            if self.direction_in == RIGHT:
+                self.coord_sorties.append([random_out1, 0])
+            if self.direction_in == LEFT:
+                self.coord_sorties.append([random_out1, self.size - 1])
+
+        if nb_out > 1:
+            random_out2 = random.randrange(1, self.size - 1)
+            if self.direction_in == RIGHT:
+                self.coord_sorties.append([self.size - 1, random_out2])
+            if self.direction_in == LEFT:
+                self.coord_sorties.append([0, random_out2])
+            if self.direction_in == DOWN:
+                self.coord_sorties.append([random_out2, 0])
+            if self.direction_in == UP:
+                self.coord_sorties.append([random_out2, self.size - 1])
+        print(self.coord_sorties)
+
+    def generer(self):
+        structure_niveau = [["" for i in range(self.size)] for j in range(self.size)]
+
+        for i_line in range(self.size):
+            for i_cell in range(self.size):
                 print(i_line, i_cell)
-                if random.randrange(100) <= ratio_murs:
+                if random.randrange(100) <= self.ratio_murs:
                     structure_niveau[i_line][i_cell] = "M"
 
-                if [i_line, i_cell] == coord_depart:
+                if [i_line, i_cell] == self.coord_depart:
                     structure_niveau[i_line][i_cell] = "DP"
 
+                if [i_line, i_cell] in self.coord_sorties:
+                    structure_niveau[i_line][i_cell] = "S"
 
 
             for line in structure_niveau:
@@ -82,8 +124,7 @@ class Niveau:
         de la liste de structure renvoyée par generer()"""
         mur = pygame.image.load(os.path.join("images", "case", "mur.png")).convert()
         depart = pygame.image.load(os.path.join("images", "case", "depart.png")).convert()
-
-        print(self.structure)
+        sortie = pygame.image.load(os.path.join("images", "case", "sortie.png")).convert()
 
         # On parcourt la liste du niveau
         for i_line, line in enumerate(self.structure):
@@ -91,15 +132,14 @@ class Niveau:
             for i_cell, cell in enumerate(line):
                 x = i_cell * CELL_SIZE[0] + DEP_CASE[0]
                 y = i_line * CELL_SIZE[1] + DEP_CASE[1]
-                if "M" in cell:  # m = Mur
+                if "M" in cell:  # M = Mur
                     fenetre.blit(mur, (x, y))
-                if "D" in cell:  # d = Départ
+                if "D" in cell:  # D = Départ
                     fenetre.blit(depart, (x, y))
+                if "S" in cell:  # S = Sortie
+                    fenetre.blit(sortie, (x, y))
                 if 'P' in cell:  # p = perso
                     fenetre.blit(perso.surface, (x, y))
 
-
-
-
-
-
+    def __str__(self):
+        return("\n".join([str(ligne) for ligne in self.structure]))
