@@ -18,7 +18,24 @@ import time
 import os
 from classes import *
 
-def update_graph(hero, score, surfaces):
+def update_graph(hero, score, score_retenue, surfaces):
+
+    # Points
+    surfaces= [surface for surface in surfaces if not surface.image_name == "point.png"]
+    Back("point_back.png", (SCORE_POS[0] - 20, SCORE_POS[1] - 320), screen, surfaces, global_mode)
+    score_jauge = score % 100
+    for point in range(1,score_jauge+1):
+        if point % 10:
+            Back("1point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
+        else:
+            Back("10point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
+
+    memoir_score_retenue = score_retenue
+    new_score_retenue = max([score_retenue, score // 100])
+    if new_score_retenue > memoir_score_retenue:
+        hero.update_life(+1)
+
+    # Vie
     surfaces = [surface for surface in surfaces if not surface.image_name.startswith("vie")]
     Back("vie_back.png", LIFE_POS, screen, surfaces, global_mode)
     if hero.life >= 1:
@@ -32,13 +49,12 @@ def update_graph(hero, score, surfaces):
     if hero.life >= 5:
         Back("vie_5.png", LIFE_POS, screen, surfaces, global_mode)
 
-    surfaces= [surface for surface in surfaces if not surface.image_name == "point.png"]
-    for point in range(1,score+1):
-        if point % 10:
-            Back("1point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
-        else:
-            Back("10point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
-    return surfaces
+
+
+
+
+
+    return surfaces, new_score_retenue
 
 
 
@@ -61,14 +77,14 @@ def init_level(scr, surf, lvl):
                      surf, global_mode)
     return surf
 
-def init_personnage(lvl, old_lvl):
+def init_personnage(lvl, old_lvl, life):
     # Init Personnage
     ennem = []
     for lin in range(lvl.size):
         for col in range(lvl.size):
             case = lvl.structure[lin][col]
             if DEPART in case:
-                h = Hero([lin, col], lvl, "hero.png", 5, ennem, global_mode)
+                h = Hero([lin, col], lvl, "hero.png", life, ennem, global_mode)
                 h.level = old_lvl
             elif STUPID_GHOST in case:
                 StupidGhost([lin, col], lvl, "stupid_ghost.png", 1, ennem, global_mode)
@@ -85,6 +101,11 @@ def update(liste, niveau, enemies):
         image.screen.blit(image.surface, image.rect)
     niveau.afficher(screen, hero, enemies, global_mode)
     print(str(niveau))
+
+    myfont = pygame.font.SysFont("monospace", 32)
+    label = myfont.render(str(score), 1, (20, 40, 20))
+    screen.blit(label, (SCORE_POS[0], SCORE_POS[1]+25))
+
     pygame.display.flip()
 
 
@@ -108,11 +129,12 @@ level = Niveau(LVL[1][0], LVL[1][1], LVL[1][2], LVL[1][3], LVL[1][4], LVL[1][5],
 
 old_level = 1
 surfaces = init_level(screen, surfaces, level)
-hero, ennemies = init_personnage(level, old_level)
+hero, ennemies = init_personnage(level, old_level, 5)
 
 
 score = 25
-surfaces = update_graph(hero, score, surfaces)
+score_retenue = 0
+surfaces, score_retenue = update_graph(hero, score, score_retenue, surfaces)
 
 clock = pygame.time.Clock()
 last_key_pressed = 0
@@ -190,19 +212,31 @@ while not quit:
                 for ennemy in ennemies:
                     ennemy.maj_mode(global_mode)
                 hero.maj_mode(global_mode)
-
                 update(surfaces, level, ennemies)
 
+
+
     if playable:
+
         # if a key of the 'moves' dict is pressed et que c'est jouable:
         if key and (time.time() - last_key_pressed >= 0.2):
             # if we change the direction, we need another animation
             print(dir)
             score -= 1
+
             last_key_pressed = time.time()
 
+
+
             if dir in [RIGHT, LEFT, DOWN, UP]:
+                nb_ennemies = len(ennemies)
                 hero.move(dir)
+
+                print("putain ", nb_ennemies, len(ennemies))
+                if len(ennemies) < nb_ennemies:
+                    score += 11
+                    print("yeah")
+
             for ennemy in ennemies:
                 ennemy.move(hero)
 
@@ -212,10 +246,11 @@ while not quit:
                 Back("game-over.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
                 # display first image in cachedeque
                 # screen.blit(cachedeque[0], rect)
-            surfaces = update_graph(hero, score, surfaces)
+            surfaces, score_retenue = update_graph(hero, score, score_retenue, surfaces)
 
             update(surfaces, level, ennemies)
             if hero.level > old_level:
+                score += 26
                 old_level = hero.level
                 print('Level Up')
                 path = os.path.join("images", "background", "level-up.png")
@@ -231,7 +266,8 @@ while not quit:
                     playable = False
                 else:
                     surfaces = init_level(screen, surfaces, level)
-                    hero, ennemies = init_personnage(level, old_level)
+                    hero, ennemies = init_personnage(level, old_level, hero.life)
+
                 update(surfaces, level, ennemies)
 
     else:
@@ -242,9 +278,11 @@ while not quit:
             score = 25
             surfaces = [s for s in surfaces if s.image_name != "game-over.jpg" and s.image_name != "gagne.jpg"]
             surfaces = init_level(screen, surfaces, level)
-            hero, ennemies =init_personnage(level, old_level)
-            surfaces = update_graph(hero, score, surfaces)
+            hero, ennemies =init_personnage(level, old_level, 5)
+            hero.life = 5
+            surfaces, score_retenue = update_graph(hero, score, score_retenue, surfaces)
             update(surfaces, level, ennemies)
+
         elif key and (dir == NON):
             quit=True
 
