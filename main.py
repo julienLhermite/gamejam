@@ -215,6 +215,7 @@ while not quit:
                 # screen.blit(cachedeque[0], rect)
             surfaces = update_graph(hero, score, surfaces)
 
+
             update(surfaces, level, ennemies)
             if hero.level > old_level:
                 old_level = hero.level
