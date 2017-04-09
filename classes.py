@@ -25,7 +25,7 @@ def find_ennemy_at_with_type(ennemies, ennemy_type, pos):
 
 class Back:
     def __init__(self, image_name, coord, screen, surfaces):
-        self.surface = pygame.image.load(os.path.join("images", "background", image_name)).convert_alpha()
+        self.surface = pygame.image.load(os.path.join(global_mode, "background", image_name)).convert_alpha()
         self.screen = screen
         self.rect = self.surface.get_rect()
         self.rect = self.rect.move(coord[0], coord[1])
@@ -33,7 +33,7 @@ class Back:
 
 class Personnage():
     def __init__(self, coord, niveau, image_name, life, ennemies):
-        self.surface = pygame.image.load(os.path.join("images", "case", image_name)).convert_alpha()
+        self.surface = pygame.image.load(os.path.join(global_mode, "case", image_name)).convert_alpha()
         self.struct = niveau.structure
         self.struct_size = niveau.size
         self.pos = coord
@@ -278,10 +278,10 @@ class Niveau:
     def afficher(self, fenetre, hero, ennemies):
         """Méthode permettant d'afficher le niveau en fonction 
         de la liste de structure renvoyée par generer()"""
-        mur = pygame.image.load(os.path.join("images", "case", "mur.png")).convert_alpha()
-        mur_casse = pygame.image.load(os.path.join("images", "case", "mur_casse.png")).convert_alpha()
-        depart = pygame.image.load(os.path.join("images", "case", "depart.png")).convert_alpha()
-        sortie = pygame.image.load(os.path.join("images", "case", "sortie.png")).convert_alpha()
+        mur = pygame.image.load(os.path.join(global_mode, "case", "mur.png")).convert_alpha()
+        mur_casse = pygame.image.load(os.path.join(global_mode, "case", "mur_casse.png")).convert_alpha()
+        depart = pygame.image.load(os.path.join(global_mode, "case", "depart.png")).convert_alpha()
+        sortie = pygame.image.load(os.path.join(global_mode, "case", "sortie.png")).convert_alpha()
 
         # On parcourt la liste du niveau
         for i_line, line in enumerate(self.structure):
