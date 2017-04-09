@@ -23,11 +23,13 @@ def update_graph(hero, score, score_retenue, surfaces):
     # Points
     surfaces= [surface for surface in surfaces if not surface.image_name == "point.png"]
     Back("point_back.png", (SCORE_POS[0] - 20, SCORE_POS[1] - 320), screen, surfaces, global_mode)
+    memoir_score = score
     if score < 0:
         new_score = 0
     else:
-        new_score = score
+        new_score = max(score, score_retenue * 100 + 1)
     score_jauge = score % 100
+
     for point in range(1,score_jauge+1):
         if point % 10:
             Back("1point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
