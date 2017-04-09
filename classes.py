@@ -55,8 +55,21 @@ class Hero(Personnage):
             # (si y a un mur on le casse un peu)
             elif MUR in self.struct[self.pos[0]+1][self.pos[1]]:
                 self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR,MUR_CASSE)
+                # si extoplasme dans le mur
+                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0] + 1, self.pos[1]]) +\
+                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0]+1,self.pos[1]])
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
             elif MUR_CASSE in self.struct[self.pos[0]+1][self.pos[1]]:
                 self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR_CASSE,"")
+                # si extoplasme dans le mur
+                # si extoplasme dans le mur
+                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0] + 1, self.pos[1]]) +\
+                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0]+1, self.pos[1]])
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
             # si il y a un ennemy
             else:
                 ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] + 1, self.pos[1]]]
@@ -72,8 +85,20 @@ class Hero(Personnage):
                 self.struct[self.pos[0]][self.pos[1]] += HERO
             elif MUR in self.struct[self.pos[0]-1][self.pos[1]]:
                 self.struct[self.pos[0] - 1][self.pos[1]] = self.struct[self.pos[0]-1][self.pos[1]].replace(MUR,MUR_CASSE)
+                # si extoplasme dans le mur
+                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0] - 1, self.pos[1]]) +\
+                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0]-1,self.pos[1]])
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
             elif MUR_CASSE in self.struct[self.pos[0]-1][self.pos[1]]:
                 self.struct[self.pos[0] - 1][self.pos[1]] = self.struct[self.pos[0]-1][self.pos[1]].replace(MUR_CASSE,"")
+                # si extoplasme dans le mur
+                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0] - 1, self.pos[1]]) +\
+                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0]-1,self.pos[1]])
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
             else:
                 # si il y a un ennemy
                 ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] - 1, self.pos[1]]]
@@ -89,8 +114,20 @@ class Hero(Personnage):
                 self.struct[self.pos[0]][self.pos[1]] += HERO
             elif MUR in self.struct[self.pos[0]][self.pos[1]+1]:
                 self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR,MUR_CASSE)
+                # si extoplasme dans le mur
+                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0], self.pos[1]+1]) +\
+                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0], self.pos[1]+1])
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
             elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]+1]:
                 self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR_CASSE,"")
+                # si extoplasme dans le mur
+                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0], self.pos[1]+1]) +\
+                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0], self.pos[1]+1])
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
             else:
                 # si il y a un ennemy
                 ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]+1]]
@@ -105,8 +142,20 @@ class Hero(Personnage):
                 self.struct[self.pos[0]][self.pos[1]] += HERO
             elif MUR in self.struct[self.pos[0]][self.pos[1]-1]:
                 self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR,MUR_CASSE)
+                # si extoplasme dans le mur
+                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0], self.pos[1]-1]) +\
+                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0], self.pos[1]-1])
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
             elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]-1]:
                 self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR_CASSE,"")
+                # si extoplasme dans le mur
+                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0], self.pos[1] - 1]) + \
+                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0], self.pos[1] - 1])
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
             else:
                 # si il y a un ennemy
                 ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]-1]]
@@ -277,7 +326,7 @@ class Niveau:
     def set_ghost(self, nb):
         for i in range(nb):
             coord = self.coord_depart
-            while coord in self.position_bus :
+            while coord in self.position_busy:
                 coord = [random.randrange(self.size), random.randrange(self.size)]
             self.position_busy.append(coord)
             self.structure[coord[0]][coord[1]] += GHOST

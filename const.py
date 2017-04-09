@@ -2,7 +2,8 @@ UP = "up"
 DOWN = "down"
 LEFT = "left"
 RIGHT = "right"
-
+OUI = "oui"
+NON = "non"
 
 MUR = "M"
 MUR_CASSE = "m"
@@ -28,7 +29,8 @@ MOINS_MOCHE = "images_good"
 
 global_mode = MOCHE
 
-TANGIBLE_FOR_GHOST = [GHOST, STUPID_GHOST, HERO, ORC]
+ECTOPLASME = [GHOST, STUPID_GHOST]
+TANGIBLE_FOR_GHOST = ECTOPLASME + [HERO, ORC]
 TANGIBLE = TANGIBLE_FOR_GHOST + [MUR, MUR_CASSE]
 
 CELL_SIZE = (32, 29)

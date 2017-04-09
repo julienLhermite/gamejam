@@ -18,6 +18,36 @@ import time
 import os
 from classes import *
 
+
+def init_level(screen, surfaces ):
+    # Initialisation des bordures du niveau
+    for i in range(level1.size + 2):
+        if (i == 0) or (i == level1.size + 1):
+            for j in range(level1.size + 2):
+                Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
+                     screen, surfaces)
+        else:
+            for j in [0, level1.size + 1]:
+                Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
+                     screen,
+                     surfaces)
+
+    # Init Personnage
+    ennemies = []
+    for lin in range(level1.size):
+        for col in range(level1.size):
+            case = level1.structure[lin][col]
+            if DEPART in case:
+                hero = Hero([lin, col], level1, "hero.png", 1, ennemies)
+            elif STUPID_GHOST in case:
+                StupidGhost([lin, col], level1, "stupid_ghost.png", 1, ennemies)
+            elif GHOST in case:
+                Ghost([lin, col], level1, "ghost.png", 1, ennemies)
+            elif ORC in case:
+                Orc([lin, col], level1, "orc.png", 1, ennemies)
+
+    return hero, ennemies
+
 def update(liste, niveau, ennemies):
     for image in liste:
         image.screen.blit(image.surface, image.rect)
@@ -43,31 +73,10 @@ screen = pygame.display.set_mode((1440, 874), RESIZABLE)
 background = Back("accueil.png", (0,0), screen, surfaces)
 
 
-level1 = Niveau(30, 7, LEFT, 2, 0, 0, 2)
+level1 = Niveau(30, 7, LEFT, 2, 1, 1, 2)
 
-# Initialisation des bordures du niveau
-for i in range(level1.size + 2):
-    if (i == 0) or (i == level1.size+1):
-        for j in range(level1.size+2):
-            Back("bordure.png", (DEP_BORDER_CASE[0]+i*CELL_SIZE[0], DEP_BORDER_CASE[1]+j*CELL_SIZE[1]), screen, surfaces)
-    else:
-        for j in [0, level1.size+1]:
-            Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]), screen,
-                 surfaces)
 
-# Init Personnage
-ennemies = []
-for lin in range(level1.size):
-    for col in range(level1.size):
-        case = level1.structure[lin][col]
-        if DEPART in case:
-            hero = Hero([lin, col], level1, "hero.png", 1, ennemies)
-        elif STUPID_GHOST in case:
-            StupidGhost([lin, col], level1, "stupid_ghost.png", 1, ennemies)
-        elif GHOST in case:
-            Ghost([lin, col], level1, "ghost.png", 1, ennemies)
-        elif ORC in case:
-            Orc([lin, col], level1, "orc.png", 1, ennemies)
+hero, ennemies = init_level(screen, surfaces)
 
 clock = pygame.time.Clock()
 last_key_pressed = 0
@@ -81,7 +90,10 @@ timer = 0
 moves = {pygame.K_LEFT:  LEFT,
          pygame.K_RIGHT: RIGHT,
          pygame.K_UP: UP,
-         pygame.K_DOWN: DOWN}
+         pygame.K_DOWN: DOWN,
+         pygame.K_o: OUI,
+         pygame.K_n: NON,
+         }
 
 mouse_pressed = False
 
@@ -140,22 +152,33 @@ while not quit:
     if playable:
 
         # if a key of the 'moves' dict is pressed et que c'est jouable:
-        if  key and (time.time() - last_key_pressed >= 0.2):
+        if key and (time.time() - last_key_pressed >= 0.2):
             # if we change the direction, we need another animation
             print(dir)
             last_key_pressed = time.time()
             print(hero.pos)
-            hero.move(dir)
+            if dir in [RIGHT, LEFT, DOWN, UP]:
+                hero.move(dir)
             for ennemy in ennemies:
                 ennemy.move(hero)
 
             print(hero.pos)
             if hero.life == 0:
                 print('GAME OVER')
+                playable = False
                 Back("game-over.jpg", GAME_OVER_POS, screen, surfaces)
                 # display first image in cachedeque
                 # screen.blit(cachedeque[0], rect)
             update(surfaces, level1, ennemies)
+    else:
+        if key and (dir == OUI):
+            print("oui")
+            level1 = Niveau(30, 7, LEFT, 2, 1, 1, 2)
+            playable = True
+            surfaces = surfaces[:-1]
+            hero, ennemies = init_level(screen, surfaces)
+            update(surfaces, level1, ennemies)
+
 
 
 
