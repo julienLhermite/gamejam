@@ -52,7 +52,6 @@ def init_level(screen, surfaces ):
 
     return hero, ennemies
 
-
 def update(liste, niveau, ennemies):
     for image in liste:
         image.screen.blit(image.surface, image.rect)
