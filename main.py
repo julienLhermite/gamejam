@@ -23,6 +23,10 @@ def update_graph(hero, score, score_retenue, surfaces):
     # Points
     surfaces= [surface for surface in surfaces if not surface.image_name == "point.png"]
     Back("point_back.png", (SCORE_POS[0] - 20, SCORE_POS[1] - 320), screen, surfaces, global_mode)
+    if score < 0:
+        new_score = 0
+    else:
+        new_score = score
     score_jauge = score % 100
     for point in range(1,score_jauge+1):
         if point % 10:
@@ -49,7 +53,7 @@ def update_graph(hero, score, score_retenue, surfaces):
     if hero.life >= 5:
         Back("vie_5.png", LIFE_POS, screen, surfaces, global_mode)
 
-    return surfaces, new_score_retenue
+    return surfaces, new_score_retenue, new_score
 
 
 
@@ -131,7 +135,7 @@ hero, ennemies = init_personnage(level, old_level, 5)
 
 score = 25
 score_retenue = 0
-surfaces, score_retenue = update_graph(hero, score, score_retenue, surfaces)
+surfaces, score_retenue, score = update_graph(hero, score, score_retenue, surfaces)
 
 clock = pygame.time.Clock()
 last_key_pressed = 0
@@ -239,16 +243,21 @@ while not quit:
                         Back("game-over.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
                         # display first image in cachedeque
                         # screen.blit(cachedeque[0], rect)
-                    surfaces, score_retenue = update_graph(hero, score, score_retenue, surfaces)
+                    surfaces, score_retenue, score = update_graph(hero, score, score_retenue, surfaces)
 
                     update(surfaces, level, ennemies)
                     if hero.level > old_level:
                         score += 26
                         old_level = hero.level
                         print('Level Up')
-                        path = os.path.join("images", "background", "level-up.png")
+                        path = os.path.join(global_mode, "background", "level-up.png")
                         screen.blit(pygame.image.load(path).convert_alpha(), (DEP_CASE[0]+CELL_SIZE[0]*(int(level.size/2)-1),
                                                                               DEP_CASE[1] + CELL_SIZE[1] * (int(level.size/2)-1)))
+                        myfont = pygame.font.SysFont("monospace", 40)
+                        label2 = myfont.render(str(hero.level), 1, (20, 40, 20))
+                        screen.blit(label2, (33 + DEP_CASE[0]+CELL_SIZE[0]*(int(level.size/2)-1),
+                                            42 + DEP_CASE[1] + CELL_SIZE[1] * (int(level.size/2)-1)))
+
                         pygame.display.flip()
                         time.sleep(2)
                         l = hero.level
@@ -277,7 +286,7 @@ while not quit:
             surfaces = init_level(screen, surfaces, level)
             hero, ennemies =init_personnage(level, old_level, 5)
             hero.life = 5
-            surfaces, score_retenue = update_graph(hero, score, score_retenue, surfaces)
+            surfaces, score_retenue, score = update_graph(hero, score, score_retenue, surfaces)
             update(surfaces, level, ennemies)
         elif key and (dir == NON) and (time.time() - last_key_pressed >= 0.2):
             last_key_pressed = time.time()
