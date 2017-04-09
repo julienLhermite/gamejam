@@ -92,12 +92,13 @@ class Hero(Personnage):
                 if ennemies_at != []:
                     for ennemy in ennemies_at:
                         ennemy.update_life(-1)
-
             # si il y a un ennemy
             else:
                 ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] + 1, self.pos[1]]]
                 if ennemies_at != []:
                     for ennemy in ennemies_at:
+                        if ennemy.type == FIREBALL:
+                            self.update_life(-1)
                         ennemy.update_life(-1)
 
 
@@ -121,12 +122,16 @@ class Hero(Personnage):
                               find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0]-1,self.pos[1]])
                 if ennemies_at != []:
                     for ennemy in ennemies_at:
+                        if ennemy.type == FIREBALL:
+                            self.update_life(-1)
                         ennemy.update_life(-1)
             else:
                 # si il y a un ennemy
                 ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] - 1, self.pos[1]]]
                 if ennemies_at != []:
                     for ennemy in ennemies_at:
+                        if ennemy.type == FIREBALL:
+                            self.update_life(-1)
                         ennemy.update_life(-1)
 
         elif (dir == RIGHT) and (self.pos[1] < self.struct_size-1):
@@ -156,6 +161,9 @@ class Hero(Personnage):
                 ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]+1]]
                 if ennemies_at != []:
                     for ennemy in ennemies_at:
+                        for ennemy in ennemies_at:
+                            if ennemy.type == FIREBALL:
+                                self.update_life
                         ennemy.update_life(-1)
 
         elif (dir == LEFT) and (self.pos[1] > 0):
@@ -184,6 +192,8 @@ class Hero(Personnage):
                 ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]-1]]
                 if ennemies_at != []:
                     for ennemy in ennemies_at:
+                        if ennemy.type == FIREBALL:
+                            self.update_life
                         ennemy.update_life(-1)
 
         self.maj_image(dir)
