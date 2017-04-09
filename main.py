@@ -31,6 +31,10 @@ def init_level(screen, surfaces ):
                 Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
                      screen,
                      surfaces)
+            for j in range(1, level1.size + 1):
+                Back("floor.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
+                     screen,
+                     surfaces)
 
     # Init Personnage
     ennemies = []
@@ -48,11 +52,12 @@ def init_level(screen, surfaces ):
 
     return hero, ennemies
 
+
 def update(liste, niveau, ennemies):
     for image in liste:
         image.screen.blit(image.surface, image.rect)
-
-    niveau.afficher(screen, hero, ennemies)
+        print(image.image_path)
+    niveau.afficher(screen, hero, ennemies, global_mode)
     print(str(niveau))
     print(ennemies)
     pygame.display.flip()
@@ -60,6 +65,7 @@ def update(liste, niveau, ennemies):
 def update_background(back, screen):
     screen.blit(back.surface, back.rect)
     pygame.display.flip()
+
 
 pygame.init()
 
@@ -134,20 +140,30 @@ while not quit:
             # Moche
             if (pygame.mouse.get_pos()[0] >= MENU_3) and (pygame.mouse.get_pos()[0] <= MENU_4):
                 global_mode = MOCHE
-                background.surface = pygame.image.load(os.path.join(global_mode, "background", "bg-excel.png")).convert_alpha()
+                background.image_name = "bg-excel.png"
+                background.image_path = os.path.join(global_mode, "background", "bg-excel.png")
+                background.surface = pygame.image.load(background.image_path).convert_alpha()
                 playable = True
-                update(surfaces, level1, ennemies)
             # moins moche
             if (pygame.mouse.get_pos()[0] >= MENU_4) and (pygame.mouse.get_pos()[0] <= MENU_5):
                 global_mode = MOINS_MOCHE
-                background.surface = pygame.image.load(os.path.join(global_mode, "background", "bg-excel.png")).convert_alpha()
+                background.image_name = "bg-excel.png"
+                background.image_path = os.path.join(global_mode, "background", "bg-excel.png")
+                background.surface = pygame.image.load(background.image_path).convert_alpha()
                 playable = True
-                update(surfaces, level1, ennemies)
             # enjoy =)
             if (pygame.mouse.get_pos()[0] >= MENU_5) and (pygame.mouse.get_pos()[0] <= MENU_6):
                 background.surface = pygame.image.load(os.path.join(global_mode, "background", "pas_porno.png")).convert_alpha()
                 playable = False
             update_background(background, screen)
+            if playable:
+                for surface in surfaces:
+                    surface.maj_mode(global_mode)
+                for ennemy in ennemies:
+                    ennemy.maj_mode(global_mode)
+                hero.maj_mode(global_mode)
+
+                update(surfaces, level1, ennemies)
 
     if playable:
 

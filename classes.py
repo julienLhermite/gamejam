@@ -25,11 +25,20 @@ def find_ennemy_at_with_type(ennemies, ennemy_type, pos):
 
 class Back:
     def __init__(self, image_name, coord, screen, surfaces):
-        self.surface = pygame.image.load(os.path.join(global_mode, "background", image_name)).convert_alpha()
+        self.image_name = image_name
+        self.image_path = os.path.join(global_mode, "background", image_name)
+        self.surface = pygame.image.load(self.image_path).convert_alpha()
         self.screen = screen
         self.rect = self.surface.get_rect()
+        self.coord = coord
         self.rect = self.rect.move(coord[0], coord[1])
         surfaces.append(self)
+
+    def maj_mode(self, mode):
+
+        self.image_path = os.path.join(mode, "background", self.image_name)
+        self.surface = pygame.image.load(self.image_path).convert_alpha()
+
 
 class Personnage():
     def __init__(self, coord, niveau, image_name, life, ennemies):
@@ -39,6 +48,13 @@ class Personnage():
         self.pos = coord
         self.life = life
         self.ennemies = ennemies
+        self.image_name = image_name
+
+    def maj_mode(self, mode):
+
+        self.image_path = os.path.join(mode, "case", self.image_name)
+        self.surface = pygame.image.load(self.image_path).convert_alpha()
+
 
 class Hero(Personnage):
 
@@ -64,7 +80,7 @@ class Hero(Personnage):
             elif MUR_CASSE in self.struct[self.pos[0]+1][self.pos[1]]:
                 self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR_CASSE,"")
                 # si extoplasme dans le mur
-                # si extoplasme dans le mur
+
                 ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0] + 1, self.pos[1]]) +\
                               find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0]+1, self.pos[1]])
                 if ennemies_at != []:
@@ -382,13 +398,14 @@ class Niveau:
 
         self.structure = structure_niveau
 
-    def afficher(self, fenetre, hero, ennemies):
+    def afficher(self, fenetre, hero, ennemies, mode):
         """Méthode permettant d'afficher le niveau en fonction 
         de la liste de structure renvoyée par generer()"""
-        mur = pygame.image.load(os.path.join(global_mode, "case", "mur.png")).convert_alpha()
-        mur_casse = pygame.image.load(os.path.join(global_mode, "case", "mur_casse.png")).convert_alpha()
-        depart = pygame.image.load(os.path.join(global_mode, "case", "depart.png")).convert_alpha()
-        sortie = pygame.image.load(os.path.join(global_mode, "case", "sortie.png")).convert_alpha()
+        mur = pygame.image.load(os.path.join(mode, "case", "mur.png")).convert_alpha()
+        mur_casse = pygame.image.load(os.path.join(mode, "case", "mur_casse.png")).convert_alpha()
+        depart = pygame.image.load(os.path.join(mode, "case", "depart.png")).convert_alpha()
+        sortie = pygame.image.load(os.path.join(mode, "case", "sortie.png")).convert_alpha()
+
 
         # On parcourt la liste du niveau
         for i_line, line in enumerate(self.structure):
