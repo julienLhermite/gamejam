@@ -38,7 +38,7 @@ screen = pygame.display.set_mode((1440, 874))
 background = Back("bg-excel.png", (0,0), screen, surfaces)
 
 
-level1 = Niveau(10, 7, LEFT, 2, 0, 0, 2)
+level1 = Niveau(30, 7, LEFT, 2, 0, 0, 2)
 
 # Initialisation des bordures du niveau
 for i in range(level1.size + 2):

@@ -134,9 +134,9 @@ class StupidGhost(Personnage):
         elif self.pos[1] == self.struct_size - 1:
             mvt_possible.remove((0, 1))
 
-        mvt = mvt_possible[random.randrange(len(mvt_possible))]
+        if mvt_possible:
+            mvt = mvt_possible[random.randrange(len(mvt_possible))]
 
-        if mvt:
             self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(STUPID_GHOST, "")
 
             if hero.pos == [self.pos[0]+mvt[0], self.pos[1]+mvt[1]]:
@@ -210,10 +210,11 @@ class Orc(Personnage):
             elif [chose for chose in self.struct[self.pos[0]+mvt[0]][self.pos[1]+mvt[1]] if chose in tangible_possible] != []:
                     mvt_possible.remove(mvt)
 
-        print(self.pos, mvt_possible)
-        mvt = mvt_possible[random.randrange(len(mvt_possible))]
+        print(self.pos, mvt_possible, hero.pos)
+        if mvt_possible:
 
-        if mvt:
+            mvt = mvt_possible[random.randrange(len(mvt_possible))]
+
             self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(ORC, "")
 
             if hero.pos == [self.pos[0]+mvt[0], self.pos[1]+mvt[1]]:
@@ -254,9 +255,9 @@ class Niveau:
         self.position_busy = [self.coord_depart]
         self.set_out(nb_out)
         self.generer()
+        self.set_orc(nb_orc)
         self.set_stupid_ghost(nb_stupid_ghost)
         self.set_ghost(nb_ghost)
-        self.set_orc(nb_orc)
 
 
     def set_stupid_ghost(self, nb):
@@ -270,7 +271,7 @@ class Niveau:
     def set_ghost(self, nb):
         for i in range(nb):
             coord = self.coord_depart
-            while coord in self.position_busy:
+            while coord in self.position_bus :
                 coord = [random.randrange(self.size), random.randrange(self.size)]
             self.position_busy.append(coord)
             self.structure[coord[0]][coord[1]] += GHOST
@@ -278,7 +279,7 @@ class Niveau:
     def set_orc(self, nb):
         for i in range(nb):
             coord = self.coord_depart
-            while coord in self.position_busy:
+            while coord in self.position_busy or (self.structure[coord[0]][coord[1]] == MUR):
                 coord = [random.randrange(self.size), random.randrange(self.size)]
             self.position_busy.append(coord)
             self.structure[coord[0]][coord[1]] += ORC
