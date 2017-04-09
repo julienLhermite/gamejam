@@ -57,7 +57,6 @@ class Hero(Personnage):
                 self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR,MUR_CASSE)
             elif MUR_CASSE in self.struct[self.pos[0]+1][self.pos[1]]:
                 self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR_CASSE,"")
-
             # si il y a un ennemy
             ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] + 1, self.pos[1]]]
             if ennemies_at != []:
@@ -137,16 +136,17 @@ class StupidGhost(Personnage):
 
         mvt = mvt_possible[random.randrange(len(mvt_possible))]
 
-        self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(STUPID_GHOST, "")
+        if mvt:
+            self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(STUPID_GHOST, "")
 
-        if hero.pos == [self.pos[0]+mvt[0], self.pos[1]+mvt[1]]:
-            hero.update_life(-1)
-        # on maj si y a vraiment rien de tangible en face
-        elif [chose for chose in self.struct[self.pos[0] + mvt[0]][self.pos[1] + mvt[1]] if chose in TANGIBLE_FOR_GHOST] == []:
-            self.pos[0] += mvt[0]
-            self.pos[1] += mvt[1]
+            if hero.pos == [self.pos[0]+mvt[0], self.pos[1]+mvt[1]]:
+                hero.update_life(-1)
+            # on maj si y a vraiment rien de tangible en face
+            elif [chose for chose in self.struct[self.pos[0] + mvt[0]][self.pos[1] + mvt[1]] if chose in TANGIBLE_FOR_GHOST] == []:
+                self.pos[0] += mvt[0]
+                self.pos[1] += mvt[1]
 
-        self.struct[self.pos[0]][self.pos[1]] += STUPID_GHOST
+            self.struct[self.pos[0]][self.pos[1]] += STUPID_GHOST
 
     def update_life(self, diff):
         self.life += diff
@@ -189,10 +189,52 @@ class Ghost(Personnage):
             self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(self.type, "")
             self.ennemies.remove(self)
 
+
+class Orc(Personnage):
+
+    def __init__(self, coord, niveau, image_name, life, ennemies):
+        super().__init__(coord, niveau, image_name, life, ennemies)
+        self.type = ORC
+        self.ennemies.append(self)
+
+    def move(self, hero):
+        mvt_possible = [(i,j) for i in range(-1,2) for j in range(-1,2)]
+        mvt_possible.remove((0,0))
+
+        mvt_possible_copy = [m for m in mvt_possible]
+        tangible_possible = [t for t in TANGIBLE if t != HERO]
+        for mvt in mvt_possible_copy:
+            if (self.pos[0]+mvt[0] > self.struct_size-1) or (self.pos[0]+mvt[0] < 0) or (self.pos[1]+mvt[1] < 0) or \
+               (self.pos[1] + mvt[1] > self.struct_size - 1):
+                mvt_possible.remove(mvt)
+            elif [chose for chose in self.struct[self.pos[0]+mvt[0]][self.pos[1]+mvt[1]] if chose in tangible_possible] != []:
+                    mvt_possible.remove(mvt)
+
+        print(self.pos, mvt_possible)
+        mvt = mvt_possible[random.randrange(len(mvt_possible))]
+
+        if mvt:
+            self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(ORC, "")
+
+            if hero.pos == [self.pos[0]+mvt[0], self.pos[1]+mvt[1]]:
+                hero.update_life(-1)
+            # on maj si y a vraiment rien de tangible en face
+            elif [chose for chose in self.struct[self.pos[0] + mvt[0]][self.pos[1] + mvt[1]] if chose in TANGIBLE] == []:
+                self.pos[0] += mvt[0]
+                self.pos[1] += mvt[1]
+
+            self.struct[self.pos[0]][self.pos[1]] += ORC
+
+    def update_life(self, diff):
+        self.life += diff
+        if self.life <= 0:
+            self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(self.type, "")
+            self.ennemies.remove(self)
+
 class Niveau:
     """Classe permettant de créer un niveau"""
 
-    def __init__(self, ratio_murs, size, direction_in, nb_out, nb_stupid_ghost, nb_ghost):
+    def __init__(self, ratio_murs, size, direction_in, nb_out, nb_stupid_ghost, nb_ghost, nb_orc):
         self.size = size
         self.ratio_murs = ratio_murs
         self.direction_in = direction_in
@@ -214,6 +256,7 @@ class Niveau:
         self.generer()
         self.set_stupid_ghost(nb_stupid_ghost)
         self.set_ghost(nb_ghost)
+        self.set_orc(nb_orc)
 
 
     def set_stupid_ghost(self, nb):
@@ -231,6 +274,14 @@ class Niveau:
                 coord = [random.randrange(self.size), random.randrange(self.size)]
             self.position_busy.append(coord)
             self.structure[coord[0]][coord[1]] += GHOST
+
+    def set_orc(self, nb):
+        for i in range(nb):
+            coord = self.coord_depart
+            while coord in self.position_busy:
+                coord = [random.randrange(self.size), random.randrange(self.size)]
+            self.position_busy.append(coord)
+            self.structure[coord[0]][coord[1]] += ORC
 
     def set_out(self, nb_out):
         """
@@ -304,6 +355,9 @@ class Niveau:
                         fenetre.blit(ennemy.surface, (x, y))
                 if GHOST in cell:
                     for ennemy in find_ennemy_at_with_type(ennemies, GHOST, [i_line, i_cell]):
+                        fenetre.blit(ennemy.surface, (x, y))
+                if ORC in cell:
+                    for ennemy in find_ennemy_at_with_type(ennemies, ORC, [i_line, i_cell]):
                         fenetre.blit(ennemy.surface, (x, y))
 
     def __str__(self):
