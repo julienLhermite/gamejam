@@ -60,15 +60,15 @@ FIRST_CELL_Y = 80
 
         # taux, size, coté, sorties, nb_ghost_stupid, nb_ghost, nb_orc , nb_tourelle)
 LVL = { 1: [5,    7,   LEFT,    1,        3,              0,       0,      0],
-        2: [10,   8,   RIGHT,    1,        2,              2,       0,      0],
+        2: [10,   8,   RIGHT,    1,        2,              3,       0,      0],
         3: [30,    9,   LEFT,    2,        1,              0,       4,      0],
         4: [85,    10,   RIGHT,    1,        4,              2,       2,      0],
-        5: [20,    11,   LEFT,    1,        0,              1,       2,      1],
-        6: [10,    12,   RIGHT,    1,        2,              1,       3,      2],
-        7: [15,    13,   LEFT,    1,        3,              2,       4,      5],
-        8: [10,   8,   RIGHT,    1,        2,              2,       0,      0],
-        9: [30,    9,   LEFT,    2,        1,              0,       4,      0],
-        10: [85,    10,   RIGHT,    1,        4,              2,       2,      0]
+        5: [60,    17,   LEFT,    2,        0,              1,       4,      0],
+        6: [10,    12,   RIGHT,    1,        2,              1,       3,      1],
+        7: [15,    13,   LEFT,    2,        3,              2,       4,      2],
+        8: [10,   8,   RIGHT,    1,        2,              2,       4,      3],
+        9: [30,    9,   LEFT,    1,        2,              0,       5,      4],
+        10: [30,    10,   RIGHT,    2,        4,              5,       6,      5]
       }
 
 LIFE_POS = (DEP_BORDER_CASE[0]+20*CELL_SIZE[0], DEP_BORDER_CASE[1]+CELL_SIZE[1]*10)
@@ -903,7 +903,7 @@ while not quit:
                     time.sleep(2)
                     l = hero.level
                     try:
-                        level = Niveau(LVL[l][0], LVL[l][1], LVL[l][2], LVL[l][3], LVL[l][4], LVL[l][5], LVL[l][6], LVL[1][7])
+                        level = Niveau(LVL[l][0], LVL[l][1], LVL[l][2], LVL[l][3], LVL[l][4], LVL[l][5], LVL[l][6], LVL[l][7])
                     except KeyError:
                         Back("gagne.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
                         playable = False

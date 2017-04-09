@@ -264,7 +264,7 @@ while not quit:
                     time.sleep(2)
                     l = hero.level
                     try:
-                        level = Niveau(LVL[l][0], LVL[l][1], LVL[l][2], LVL[l][3], LVL[l][4], LVL[l][5], LVL[l][6], LVL[1][7])
+                        level = Niveau(LVL[l][0], LVL[l][1], LVL[l][2], LVL[l][3], LVL[l][4], LVL[l][5], LVL[l][6], LVL[l][7])
                     except KeyError:
                         Back("gagne.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
                         playable = False
