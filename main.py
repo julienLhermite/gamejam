@@ -54,6 +54,9 @@ for i in range(level1.size + 2):
         for j in [0, level1.size+1]:
             Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]), screen,
                  surfaces)
+        for j in range(1,level1.size+1):
+            Back("floor.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]), screen,
+                 surfaces)
 
 # Init Personnage
 ennemies = []
