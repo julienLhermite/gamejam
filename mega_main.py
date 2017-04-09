@@ -60,12 +60,15 @@ FIRST_CELL_Y = 80
 
         # taux, size, coté, sorties, nb_ghost_stupid, nb_ghost, nb_orc , nb_tourelle)
 LVL = { 1: [5,    7,   LEFT,    1,        3,              0,       0,      0],
-        2: [10,   9,   RIGHT,    1,        2,              2,       0,      0],
-        3: [30,    17,   LEFT,    2,        1,              0,       4,      0],
+        2: [10,   8,   RIGHT,    1,        2,              2,       0,      0],
+        3: [30,    9,   LEFT,    2,        1,              0,       4,      0],
         4: [85,    10,   RIGHT,    1,        4,              2,       2,      0],
         5: [20,    11,   LEFT,    1,        0,              1,       2,      1],
-        6: [10,    14,   RIGHT,    1,        2,              1,       3,      2],
-        7: [15,    10,   LEFT,    1,        3,              2,       4,      5],
+        6: [10,    12,   RIGHT,    1,        2,              1,       3,      2],
+        7: [15,    13,   LEFT,    1,        3,              2,       4,      5],
+        8: [10,   8,   RIGHT,    1,        2,              2,       0,      0],
+        9: [30,    9,   LEFT,    2,        1,              0,       4,      0],
+        10: [85,    10,   RIGHT,    1,        4,              2,       2,      0]
       }
 
 LIFE_POS = (DEP_BORDER_CASE[0]+20*CELL_SIZE[0], DEP_BORDER_CASE[1]+CELL_SIZE[1]*10)
