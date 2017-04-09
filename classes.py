@@ -60,6 +60,7 @@ class Hero(Personnage):
 
     def __init__(self, coord, niveau, image_name, life, ennemies):
         super().__init__(coord, niveau, image_name, life, ennemies)
+        self.level = 1
 
     def move(self, dir):
         if (dir == DOWN) and (self.pos[0] < self.struct_size-1):
@@ -179,6 +180,10 @@ class Hero(Personnage):
                     for ennemy in ennemies_at:
                         ennemy.update_life(-1)
 
+        if SORTIE in self.struct[self.pos[0]][self.pos[1]]:
+            self.level += 1
+            print("hero level:",self.level)
+
     def update_life(self, diff):
         self.life += diff
 
@@ -281,7 +286,6 @@ class Orc(Personnage):
                 elif [chose for chose in self.struct[self.pos[0]+mvt[0]][self.pos[1]+mvt[1]] if chose in tangible_possible] != []:
                         mvt_possible.remove(mvt)
 
-        print(mvt_possible)
         if mvt_possible:
 
             mvt = mvt_possible[random.randrange(len(mvt_possible))]
@@ -380,7 +384,6 @@ class Niveau:
                 self.coord_sorties.append([random_out2, 0])
             if self.direction_in == UP:
                 self.coord_sorties.append([random_out2, self.size - 1])
-        print(self.coord_sorties)
 
     def generer(self):
         structure_niveau = [["" for i in range(self.size)] for j in range(self.size)]
