@@ -139,7 +139,6 @@ while not quit:
 
     if playable:
 
-
         # if a key of the 'moves' dict is pressed et que c'est jouable:
         if  key and (time.time() - last_key_pressed >= 0.2):
             # if we change the direction, we need another animation
@@ -153,10 +152,10 @@ while not quit:
             print(hero.pos)
             update(surfaces, level1, ennemies)
 
-        if hero.life == 0:
-            print('GAME OVER')
-            Back("game-over.jpg", GAME_OVER_POS, screen, surfaces)
-            # display first image in cachedeque
-            # screen.blit(cachedeque[0], rect)
+            if hero.life == 0:
+                print('GAME OVER')
+                Back("game-over.jpg", GAME_OVER_POS, screen, surfaces)
+                # display first image in cachedeque
+                # screen.blit(cachedeque[0], rect)
 
 
