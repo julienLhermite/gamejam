@@ -256,7 +256,7 @@ while not quit:
                         myfont = pygame.font.SysFont("monospace", 40)
                         label2 = myfont.render(str(hero.level), 1, (20, 40, 20))
                         screen.blit(label2, (33 + DEP_CASE[0]+CELL_SIZE[0]*(int(level.size/2)-1),
-                                            42 + DEP_CASE[1] + CELL_SIZE[1] * (int(level.size/2)-1)))
+                                            32 + DEP_CASE[1] + CELL_SIZE[1] * (int(level.size/2)-1)))
 
                         pygame.display.flip()
                         time.sleep(2)
