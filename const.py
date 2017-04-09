@@ -4,6 +4,7 @@ LEFT = "left"
 RIGHT = "right"
 OUI = "oui"
 NON = "non"
+SPACE = "space"
 
 MUR = "M"
 MUR_CASSE = "m"

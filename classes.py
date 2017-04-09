@@ -49,18 +49,23 @@ class Personnage():
         self.life = life
         self.ennemies = ennemies
         self.image_name = image_name
+        self.mode = mode
 
     def maj_mode(self, mode):
-
+        self.mode = mode
         self.image_path = os.path.join(mode, "case", self.image_name)
         self.surface = pygame.image.load(self.image_path).convert_alpha()
-
 
 class Hero(Personnage):
 
     def __init__(self, coord, niveau, image_name, life, ennemies, mode):
         super().__init__(coord, niveau, image_name, life, ennemies, mode)
         self.level = 1
+
+    def maj_image(self, dir):
+        self.image_name = 'hero-'+ dir + '.png'
+        self.image_path = os.path.join(self.mode, 'case', self.image_name)
+        self.surface = pygame.image.load(self.image_path).convert_alpha()
 
     def move(self, dir):
         if (dir == DOWN) and (self.pos[0] < self.struct_size-1):
@@ -179,6 +184,8 @@ class Hero(Personnage):
                 if ennemies_at != []:
                     for ennemy in ennemies_at:
                         ennemy.update_life(-1)
+
+        self.maj_image(dir)
 
         if SORTIE in self.struct[self.pos[0]][self.pos[1]]:
             self.level += 1
