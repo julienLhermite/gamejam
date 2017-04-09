@@ -19,10 +19,10 @@ import os
 from classes import *
 
 def update(liste, niveau, ennemies):
-    for image in liste[1:]:
+    for image in liste:
         image.screen.blit(image.surface, image.rect)
         print(image.image_path)
-    niveau.afficher(screen, hero, ennemies)
+    niveau.afficher(screen, hero, ennemies, global_mode)
     print(str(niveau))
     print(ennemies)
     pygame.display.flip()
@@ -122,12 +122,16 @@ while not quit:
             # Moche
             if (pygame.mouse.get_pos()[0] >= MENU_3) and (pygame.mouse.get_pos()[0] <= MENU_4):
                 global_mode = MOCHE
-                background.surface = pygame.image.load(os.path.join(global_mode, "background", "bg-excel.png")).convert_alpha()
+                background.image_name = "bg-excel.png"
+                background.image_path = os.path.join(global_mode, "background", "bg-excel.png")
+                background.surface = pygame.image.load(background.image_path).convert_alpha()
                 playable = True
             # moins moche
             if (pygame.mouse.get_pos()[0] >= MENU_4) and (pygame.mouse.get_pos()[0] <= MENU_5):
                 global_mode = MOINS_MOCHE
-                background.surface = pygame.image.load(os.path.join(global_mode, "background", "bg-excel.png")).convert_alpha()
+                background.image_name = "bg-excel.png"
+                background.image_path = os.path.join(global_mode, "background", "bg-excel.png")
+                background.surface = pygame.image.load(background.image_path).convert_alpha()
                 playable = True
             # enjoy =)
             if (pygame.mouse.get_pos()[0] >= MENU_5) and (pygame.mouse.get_pos()[0] <= MENU_6):
@@ -139,9 +143,7 @@ while not quit:
                     surface.maj_mode(global_mode)
                 for ennemy in ennemies:
                     ennemy.maj_mode(global_mode)
-
-
-
+                hero.maj_mode(global_mode)
 
                 update(surfaces, level1, ennemies)
 

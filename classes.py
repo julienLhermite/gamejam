@@ -343,13 +343,14 @@ class Niveau:
 
         self.structure = structure_niveau
 
-    def afficher(self, fenetre, hero, ennemies):
+    def afficher(self, fenetre, hero, ennemies, mode):
         """Méthode permettant d'afficher le niveau en fonction 
         de la liste de structure renvoyée par generer()"""
-        mur = pygame.image.load(os.path.join(global_mode, "case", "mur.png")).convert_alpha()
-        mur_casse = pygame.image.load(os.path.join(global_mode, "case", "mur_casse.png")).convert_alpha()
-        depart = pygame.image.load(os.path.join(global_mode, "case", "depart.png")).convert_alpha()
-        sortie = pygame.image.load(os.path.join(global_mode, "case", "sortie.png")).convert_alpha()
+        mur = pygame.image.load(os.path.join(mode, "case", "mur.png")).convert_alpha()
+        mur_casse = pygame.image.load(os.path.join(mode, "case", "mur_casse.png")).convert_alpha()
+        depart = pygame.image.load(os.path.join(mode, "case", "depart.png")).convert_alpha()
+        sortie = pygame.image.load(os.path.join(mode, "case", "sortie.png")).convert_alpha()
+        print("youpi", global_mode)
 
         # On parcourt la liste du niveau
         for i_line, line in enumerate(self.structure):
