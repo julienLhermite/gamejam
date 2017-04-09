@@ -19,9 +19,9 @@ import os
 from classes import *
 
 def update(liste, niveau, ennemies):
-    for image in liste:
+    for image in liste[1:]:
         image.screen.blit(image.surface, image.rect)
-
+        print(image.image_path)
     niveau.afficher(screen, hero, ennemies)
     print(str(niveau))
     print(ennemies)
@@ -43,7 +43,7 @@ screen = pygame.display.set_mode((1440, 874))
 background = Back("accueil.png", (0,0), screen, surfaces)
 
 
-level1 = Niveau(30, 7, LEFT, 2, 0, 0, 2)
+level1 = Niveau(30, 7, LEFT, 2, 1, 1, 1)
 
 # Initialisation des bordures du niveau
 for i in range(level1.size + 2):
@@ -124,18 +124,26 @@ while not quit:
                 global_mode = MOCHE
                 background.surface = pygame.image.load(os.path.join(global_mode, "background", "bg-excel.png")).convert_alpha()
                 playable = True
-                update(surfaces, level1, ennemies)
             # moins moche
             if (pygame.mouse.get_pos()[0] >= MENU_4) and (pygame.mouse.get_pos()[0] <= MENU_5):
                 global_mode = MOINS_MOCHE
                 background.surface = pygame.image.load(os.path.join(global_mode, "background", "bg-excel.png")).convert_alpha()
                 playable = True
-                update(surfaces, level1, ennemies)
             # enjoy =)
             if (pygame.mouse.get_pos()[0] >= MENU_5) and (pygame.mouse.get_pos()[0] <= MENU_6):
                 background.surface = pygame.image.load(os.path.join(global_mode, "background", "pas_porno.png")).convert_alpha()
                 playable = False
             update_background(background, screen)
+            if playable:
+                for surface in surfaces:
+                    surface.maj_mode(global_mode)
+                for ennemy in ennemies:
+                    ennemy.maj_mode(global_mode)
+
+
+
+
+                update(surfaces, level1, ennemies)
 
     if playable:
 

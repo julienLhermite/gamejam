@@ -25,11 +25,20 @@ def find_ennemy_at_with_type(ennemies, ennemy_type, pos):
 
 class Back:
     def __init__(self, image_name, coord, screen, surfaces):
-        self.surface = pygame.image.load(os.path.join(global_mode, "background", image_name)).convert_alpha()
+        self.image_name = image_name
+        self.image_path = os.path.join(global_mode, "background", image_name)
+        self.surface = pygame.image.load(self.image_path).convert_alpha()
         self.screen = screen
         self.rect = self.surface.get_rect()
+        self.coord = coord
         self.rect = self.rect.move(coord[0], coord[1])
         surfaces.append(self)
+
+    def maj_mode(self, mode):
+
+        self.image_path = os.path.join(mode, "background", self.image_name)
+        self.surface = pygame.image.load(self.image_path).convert_alpha()
+
 
 class Personnage():
     def __init__(self, coord, niveau, image_name, life, ennemies):
@@ -39,6 +48,13 @@ class Personnage():
         self.pos = coord
         self.life = life
         self.ennemies = ennemies
+        self.image_name = image_name
+
+    def maj_mode(self, mode):
+
+        self.image_path = os.path.join(mode, "case", self.image_name)
+        self.surface = pygame.image.load(self.image_path).convert_alpha()
+
 
 class Hero(Personnage):
 
@@ -271,7 +287,7 @@ class Niveau:
     def set_ghost(self, nb):
         for i in range(nb):
             coord = self.coord_depart
-            while coord in self.position_bus :
+            while coord in self.position_busy :
                 coord = [random.randrange(self.size), random.randrange(self.size)]
             self.position_busy.append(coord)
             self.structure[coord[0]][coord[1]] += GHOST
