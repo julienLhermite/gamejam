@@ -200,7 +200,6 @@ class Hero(Personnage):
 
         if SORTIE in self.struct[self.pos[0]][self.pos[1]]:
             self.level += 1
-            print("hero level:",self.level)
 
     def update_life(self, diff):
         self.life += diff
@@ -208,7 +207,6 @@ class Hero(Personnage):
             self.life = 5
         if self.life < 0:
             self.life = 0
-        print("VIE :", self.life)
 
 
 class StupidGhost(Personnage):
@@ -359,7 +357,6 @@ class FireBall(Personnage):
                 hero.update_life(-1)
                 self.update_life(-1)
             else:
-                print( self.pos[0] + mvt[0], self.pos[1] + mvt[1])
                 self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(FIREBALL,"")
                 self.pos[0] += mvt[0]
                 self.pos[1] += mvt[1]
@@ -416,12 +413,15 @@ class Turret(Personnage):
             fireball_pos = [self.pos[0]-1, self.pos[1]]
         elif dir == DOWN:
             fireball_pos = [self.pos[0]+1, self.pos[1]]
+
+
         if (fireball_pos[0] in list(range(self.struct_size))) and ((fireball_pos[1] in list(range(self.struct_size)))):
             tangible_possible = [t for t in TANGIBLE if t != HERO]
+            print(fireball_pos, hero.pos, self.struct[fireball_pos[0]][fireball_pos[1]])
             if [chose for chose in self.struct[fireball_pos[0]][fireball_pos[1]] if chose in tangible_possible] == []:
                 f = FireBall(fireball_pos, self.niveau, "fireball.png", 1, self.ennemies, self.mode)
                 f.dir = dir
-            elif HERO in self.struct[fireball_pos[0]][fireball_pos[1]]:
+            elif hero.pos == fireball_pos:
                 hero.update_life(-1)
 
 

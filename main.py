@@ -232,44 +232,44 @@ while not quit:
                 if len(ennemies) < nb_ennemies:
                     score += 11
 
-                for ennemy in ennemies:
+                for ennemy in set(ennemies):
                     ennemy.move(hero)
 
-                    if hero.life == 0:
-                        print('GAME OVER')
+                if hero.life == 0:
+                    print('GAME OVER')
+                    playable = False
+                    hero.image_name = "hero-dead.png"
+                    hero.surface = pygame.image.load(os.path.join(global_mode, "case", 'hero-dead.png')).convert_alpha()
+                    Back("game-over.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
+                    # display first image in cachedeque
+                    # screen.blit(cachedeque[0], rect)
+                surfaces, score_retenue, score = update_graph(hero, score, score_retenue, surfaces)
+
+                update(surfaces, level, ennemies)
+                if hero.level > old_level:
+                    score += 26
+                    old_level = hero.level
+                    print('Level Up')
+                    path = os.path.join(global_mode, "background", "level-up.png")
+                    screen.blit(pygame.image.load(path).convert_alpha(), (DEP_CASE[0]+CELL_SIZE[0]*(int(level.size/2)-1),
+                                                                          DEP_CASE[1] + CELL_SIZE[1] * (int(level.size/2)-1)))
+                    myfont = pygame.font.SysFont("monospace", 40)
+                    label2 = myfont.render(str(hero.level), 1, (20, 40, 20))
+                    screen.blit(label2, (33 + DEP_CASE[0]+CELL_SIZE[0]*(int(level.size/2)-1),
+                                        42 + DEP_CASE[1] + CELL_SIZE[1] * (int(level.size/2)-1)))
+
+                    pygame.display.flip()
+                    time.sleep(2)
+                    l = hero.level
+                    try:
+                        level = Niveau(LVL[l][0], LVL[l][1], LVL[l][2], LVL[l][3], LVL[l][4], LVL[l][5], LVL[l][6], LVL[1][7])
+                    except KeyError:
+                        Back("gagne.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
                         playable = False
-                        hero.image_name = "hero-dead.png"
-                        hero.surface = pygame.image.load(os.path.join(global_mode, "case", 'hero-dead.png')).convert_alpha()
-                        Back("game-over.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
-                        # display first image in cachedeque
-                        # screen.blit(cachedeque[0], rect)
-                    surfaces, score_retenue, score = update_graph(hero, score, score_retenue, surfaces)
-
+                    else:
+                        surfaces = init_level(screen, surfaces, level)
+                        hero, ennemies = init_personnage(level, old_level, hero.life)
                     update(surfaces, level, ennemies)
-                    if hero.level > old_level:
-                        score += 26
-                        old_level = hero.level
-                        print('Level Up')
-                        path = os.path.join(global_mode, "background", "level-up.png")
-                        screen.blit(pygame.image.load(path).convert_alpha(), (DEP_CASE[0]+CELL_SIZE[0]*(int(level.size/2)-1),
-                                                                              DEP_CASE[1] + CELL_SIZE[1] * (int(level.size/2)-1)))
-                        myfont = pygame.font.SysFont("monospace", 40)
-                        label2 = myfont.render(str(hero.level), 1, (20, 40, 20))
-                        screen.blit(label2, (33 + DEP_CASE[0]+CELL_SIZE[0]*(int(level.size/2)-1),
-                                            42 + DEP_CASE[1] + CELL_SIZE[1] * (int(level.size/2)-1)))
-
-                        pygame.display.flip()
-                        time.sleep(2)
-                        l = hero.level
-                        try:
-                            level = Niveau(LVL[l][0], LVL[l][1], LVL[l][2], LVL[l][3], LVL[l][4], LVL[l][5], LVL[l][6], LVL[1][7])
-                        except KeyError:
-                            Back("gagne.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
-                            playable = False
-                        else:
-                            surfaces = init_level(screen, surfaces, level)
-                            hero, ennemies = init_personnage(level, old_level, hero.life)
-                        update(surfaces, level, ennemies)
             elif dir == SPACE:
                 background.surface = pygame.image.load(os.path.join(global_mode, "background", "accueil.png")).convert_alpha()
                 playable = False
