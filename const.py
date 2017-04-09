@@ -43,7 +43,8 @@ FIRST_CELL_Y = 80
 
 # taux, size, coté, sorties, nb_ghost_stupid, nb_ghost, nb_orc)
 LVL = {1: [10, 7,LEFT, 2, 1, 1, 1],
-       #      2: [20, 9,RIGHT, 2, 2, 2, 2]
+            2: [20, 9,RIGHT, 2, 2, 2, 2],
+      3: [10, 7,LEFT, 2, 1, 1, 1]
       }
 
 LIFE_POS = (DEP_BORDER_CASE[0]+20*CELL_SIZE[0], DEP_BORDER_CASE[1]+CELL_SIZE[1]*10)

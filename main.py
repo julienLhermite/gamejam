@@ -215,7 +215,6 @@ while not quit:
                 # screen.blit(cachedeque[0], rect)
             surfaces = update_graph(hero, score, surfaces)
 
-
             update(surfaces, level, ennemies)
             if hero.level > old_level:
                 old_level = hero.level
@@ -229,7 +228,7 @@ while not quit:
                 try:
                     level = Niveau(LVL[l][0], LVL[l][1], LVL[l][2], LVL[l][3], LVL[l][4], LVL[l][5], LVL[l][6])
                 except KeyError:
-                    Back("gagne.jpg", GAME_OVER_POS, screen, surfaces)
+                    Back("gagne.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
                     playable = False
                 else:
                     surfaces = init_level(screen, surfaces, level)
