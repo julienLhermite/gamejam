@@ -87,6 +87,8 @@ def init_personnage(lvl, old_lvl, life):
                 Ghost([lin, col], lvl, "ghost.png", 1, ennem, global_mode)
             elif ORC in case:
                 Orc([lin, col], lvl, "orc.png", 1, ennem, global_mode)
+            elif TURRET in case:
+                Turret([lin, col], lvl, "turret_right.png", 1, ennem, global_mode)
 
     return h, ennem
 
@@ -120,7 +122,7 @@ screen = pygame.display.set_mode((1440, 874), RESIZABLE)
 
 background = Back("accueil.png", (0,0), screen, surfaces, global_mode)
 
-level = Niveau(LVL[1][0], LVL[1][1], LVL[1][2], LVL[1][3], LVL[1][4], LVL[1][5], LVL[1][6])
+level = Niveau(LVL[1][0], LVL[1][1], LVL[1][2], LVL[1][3], LVL[1][4], LVL[1][5], LVL[1][6], LVL[1][7])
 
 old_level = 1
 surfaces = init_level(screen, surfaces, level)
@@ -251,13 +253,13 @@ while not quit:
                         time.sleep(2)
                         l = hero.level
                         try:
-                            level = Niveau(LVL[l][0], LVL[l][1], LVL[l][2], LVL[l][3], LVL[l][4], LVL[l][5], LVL[l][6])
+                            level = Niveau(LVL[l][0], LVL[l][1], LVL[l][2], LVL[l][3], LVL[l][4], LVL[l][5], LVL[l][6], LVL[1][7])
                         except KeyError:
                             Back("gagne.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
                             playable = False
                         else:
                             surfaces = init_level(screen, surfaces, level)
-                            hero, ennemies = init_personnage(level, old_level)
+                            hero, ennemies = init_personnage(level, old_level, hero.life)
                         update(surfaces, level, ennemies)
             elif dir == SPACE:
                 background.surface = pygame.image.load(os.path.join(global_mode, "background", "accueil.png")).convert_alpha()
@@ -268,7 +270,7 @@ while not quit:
         if key and (dir == OUI) and (time.time() - last_key_pressed >= 0.2):
             last_key_pressed = time.time()
             old_level = 1
-            level = Niveau(LVL[1][0], LVL[1][1], LVL[1][2], LVL[1][3], LVL[1][4], LVL[1][5], LVL[1][6])
+            level = Niveau(LVL[1][0], LVL[1][1], LVL[1][2], LVL[1][3], LVL[1][4], LVL[1][5], LVL[1][6], LVL[1][7])
             playable = True
             score = 25
             surfaces = [s for s in surfaces if s.image_name != "game-over.jpg" and s.image_name != "gagne.jpg"]

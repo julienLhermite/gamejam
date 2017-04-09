@@ -92,6 +92,7 @@ class Hero(Personnage):
                 if ennemies_at != []:
                     for ennemy in ennemies_at:
                         ennemy.update_life(-1)
+
             # si il y a un ennemy
             else:
                 ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] + 1, self.pos[1]]]
@@ -320,10 +321,111 @@ class Orc(Personnage):
             self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(self.type, "")
             self.ennemies.remove(self)
 
+class FireBall(Personnage):
+    def __init__(self, coord, niveau, image_name, life, ennemies, mode):
+        super().__init__(coord, niveau, image_name, life, ennemies, mode)
+        self.type = FIREBALL
+        self.dir = None
+        self.ennemies.append(self)
+        self.struct[self.pos[0]][self.pos[1]] += FIREBALL
+
+
+    def move(self, hero):
+        if self.dir == RIGHT:
+            mvt = (0, 1)
+        elif self.dir == UP:
+            mvt = (-1, 0)
+        elif self.dir == LEFT:
+            mvt = (0, -1)
+        else:
+            mvt = (1, 0)
+
+        tangible_possible = [t for t in TANGIBLE if t != HERO]
+        if (self.pos[0] + mvt[0] in list(range(self.struct_size))) and (
+                (self.pos[1] + mvt[1] in list(range(self.struct_size)))):
+            if [chose for chose in self.struct[self.pos[0] + mvt[0]][self.pos[1] + mvt[1]] if chose in tangible_possible] != []:
+                self.update_life(-1)
+            elif HERO in self.struct[self.pos[0] + mvt[0]][self.pos[1] + mvt[1]]:
+                hero.update_life(-1)
+                self.update_life(-1)
+            else:
+                print( self.pos[0] + mvt[0], self.pos[1] + mvt[1])
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(FIREBALL,"")
+                self.pos[0] += mvt[0]
+                self.pos[1] += mvt[1]
+                self.struct[self.pos[0]][self.pos[1]] += FIREBALL
+        else:
+            self.update_life(-1)
+
+    def update_life(self, diff):
+        self.life += diff
+        if self.life <= 0:
+            self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(self.type, "")
+            self.ennemies.remove(self)
+
+class Turret(Personnage):
+
+    def __init__(self, coord, niveau, image_name, life, ennemies, mode):
+        super().__init__(coord, niveau, image_name, life, ennemies, mode)
+        self.type = TURRET
+        self.dir = RIGHT
+        self.ennemies.append(self)
+        self.firegun_hot = True
+        self.niveau = niveau
+
+    def maj_image(self, dir):
+        self.image_name = 'turret_'+ dir + '.png'
+        self.image_path = os.path.join(self.mode, 'case', self.image_name)
+        self.surface = pygame.image.load(self.image_path).convert_alpha()
+
+    def move(self, hero):
+        if self.firegun_hot:
+            self.firegun_hot = False
+            if self.dir == RIGHT:
+                self.dir = UP
+                self.maj_image(self.dir)
+            elif self.dir == UP:
+                self.dir = LEFT
+                self.maj_image(self.dir)
+            elif self.dir == LEFT:
+                self.dir = DOWN
+                self.maj_image(self.dir)
+            else:
+                self.dir = RIGHT
+                self.maj_image(self.dir)
+        else:
+            self.firegun_hot = True
+            self.shot_fireball(self.dir, hero)
+
+    def shot_fireball(self, dir, hero):
+        if dir == RIGHT:
+            fireball_pos = [self.pos[0], self.pos[1] + 1]
+        elif dir == LEFT:
+            fireball_pos = [self.pos[0], self.pos[1] - 1]
+        elif dir == UP:
+            fireball_pos = [self.pos[0]-1, self.pos[1]]
+        elif dir == DOWN:
+            fireball_pos = [self.pos[0]+1, self.pos[1]]
+        if (fireball_pos[0] in list(range(self.struct_size))) and ((fireball_pos[1] in list(range(self.struct_size)))):
+            tangible_possible = [t for t in TANGIBLE if t != HERO]
+            if [chose for chose in self.struct[fireball_pos[0]][fireball_pos[1]] if chose in tangible_possible] == []:
+                f = FireBall(fireball_pos, self.niveau, "fireball.png", 1, self.ennemies, self.mode)
+                f.dir = dir
+            elif HERO in self.struct[fireball_pos[0]][fireball_pos[1]]:
+                hero.update_life(-1)
+
+
+    def update_life(self, diff):
+        self.life += diff
+        if self.life <= 0:
+            self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(self.type, "")
+            self.ennemies.remove(self)
+
+
 class Niveau:
     """Classe permettant de créer un niveau"""
 
-    def __init__(self, ratio_murs, size, direction_in, nb_out, nb_stupid_ghost, nb_ghost, nb_orc):
+    def __init__(self, ratio_murs, size, direction_in, nb_out, nb_stupid_ghost, nb_ghost, nb_orc, nb_turret):
         self.size = size
         self.ratio_murs = ratio_murs
         self.direction_in = direction_in
@@ -344,9 +446,17 @@ class Niveau:
         self.set_out(nb_out)
         self.generer()
         self.set_orc(nb_orc)
+        self.set_turret(nb_turret)
         self.set_stupid_ghost(nb_stupid_ghost)
         self.set_ghost(nb_ghost)
 
+    def set_turret(self, nb):
+        for i in range(nb):
+            coord = self.coord_depart
+            while coord in self.position_busy or (self.structure[coord[0]][coord[1]] == MUR):
+                coord = [random.randrange(self.size), random.randrange(self.size)]
+            self.position_busy.append(coord)
+            self.structure[coord[0]][coord[1]] += TURRET
 
     def set_stupid_ghost(self, nb):
         for i in range(nb):
@@ -448,6 +558,12 @@ class Niveau:
                         fenetre.blit(ennemy.surface, (x, y))
                 if ORC in cell:
                     for ennemy in find_ennemy_at_with_type(ennemies, ORC, [i_line, i_cell]):
+                        fenetre.blit(ennemy.surface, (x, y))
+                if TURRET in cell:
+                    for ennemy in find_ennemy_at_with_type(ennemies, TURRET, [i_line, i_cell]):
+                        fenetre.blit(ennemy.surface, (x, y))
+                if FIREBALL in cell:
+                    for ennemy in find_ennemy_at_with_type(ennemies, FIREBALL, [i_line, i_cell]):
                         fenetre.blit(ennemy.surface, (x, y))
 
     def __str__(self):

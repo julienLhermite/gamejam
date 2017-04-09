@@ -14,6 +14,8 @@ SORTIE = "S"
 GHOST = "G"
 ORC = "O"
 STUPID_GHOST = "g"
+TURRET = "T"
+FIREBALL = "*"
 
 MENU_UP = 826
 MENU_DOWN = 848
@@ -31,7 +33,7 @@ MOINS_MOCHE = "images_good"
 global_mode = MOCHE
 
 ECTOPLASME = [GHOST, STUPID_GHOST]
-TANGIBLE_FOR_GHOST = ECTOPLASME + [HERO, ORC]
+TANGIBLE_FOR_GHOST = ECTOPLASME + [HERO, ORC, TURRET]
 TANGIBLE = TANGIBLE_FOR_GHOST + [MUR, MUR_CASSE]
 
 CELL_SIZE = (32, 29)
@@ -43,9 +45,9 @@ FIRST_CELL_X = 120
 FIRST_CELL_Y = 80
 
 # taux, size, coté, sorties, nb_ghost_stupid, nb_ghost, nb_orc)
-LVL = {1: [10, 7,LEFT, 2, 1, 1, 1],
-            2: [20, 9,RIGHT, 2, 2, 2, 2],
-      3: [10, 7,LEFT, 2, 1, 1, 1]
+LVL = {1: [0, 12,LEFT, 0, 0, 0, 1, 1],
+            2: [20, 9,RIGHT, 2, 2, 2, 2, 2],
+      3: [10, 7,LEFT, 2, 1, 1, 1, 1]
       }
 
 LIFE_POS = (DEP_BORDER_CASE[0]+20*CELL_SIZE[0], DEP_BORDER_CASE[1]+CELL_SIZE[1]*10)
