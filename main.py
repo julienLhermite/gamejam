@@ -18,6 +18,29 @@ import time
 import os
 from classes import *
 
+def update_graph(hero, score, surfaces):
+    surfaces = [surface for surface in surfaces if not surface.image_name.startswith("vie")]
+    Back("vie_back.png", LIFE_POS, screen, surfaces, global_mode)
+    if hero.life >= 1:
+        Back("vie_1.png", LIFE_POS, screen, surfaces, global_mode)
+    if hero.life >= 2:
+        Back("vie_2.png", LIFE_POS, screen, surfaces, global_mode)
+    if hero.life >= 3:
+        Back("vie_3.png", LIFE_POS, screen, surfaces, global_mode)
+    if hero.life >= 4:
+        Back("vie_4.png", LIFE_POS, screen, surfaces, global_mode)
+    if hero.life >= 5:
+        Back("vie_5.png", LIFE_POS, screen, surfaces, global_mode)
+
+    surfaces= [surface for surface in surfaces if not surface.image_name == "point.png"]
+    for point in range(1,score+1):
+        if point % 10:
+            Back("1point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
+        else:
+            Back("10point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
+    return surfaces
+
+
 
 def init_level(screen, surfaces ):
     # Initialisation des bordures du niveau
@@ -25,16 +48,16 @@ def init_level(screen, surfaces ):
         if (i == 0) or (i == level1.size + 1):
             for j in range(level1.size + 2):
                 Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
-                     screen, surfaces)
+                     screen, surfaces, global_mode)
         else:
             for j in [0, level1.size + 1]:
                 Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
                      screen,
-                     surfaces)
+                     surfaces, global_mode)
             for j in range(1, level1.size + 1):
                 Back("floor.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
                      screen,
-                     surfaces)
+                     surfaces, global_mode)
 
     # Init Personnage
     ennemies = []
@@ -42,20 +65,19 @@ def init_level(screen, surfaces ):
         for col in range(level1.size):
             case = level1.structure[lin][col]
             if DEPART in case:
-                hero = Hero([lin, col], level1, "hero.png", 1, ennemies)
+                hero = Hero([lin, col], level1, "hero.png", 5, ennemies, global_mode)
             elif STUPID_GHOST in case:
-                StupidGhost([lin, col], level1, "stupid_ghost.png", 1, ennemies)
+                StupidGhost([lin, col], level1, "stupid_ghost.png", 1, ennemies, global_mode)
             elif GHOST in case:
-                Ghost([lin, col], level1, "ghost.png", 1, ennemies)
+                Ghost([lin, col], level1, "ghost.png", 1, ennemies, global_mode)
             elif ORC in case:
-                Orc([lin, col], level1, "orc.png", 1, ennemies)
+                Orc([lin, col], level1, "orc.png", 1, ennemies, global_mode)
 
     return hero, ennemies
 
 def update(liste, niveau, ennemies):
     for image in liste:
         image.screen.blit(image.surface, image.rect)
-        print(image.image_path)
     niveau.afficher(screen, hero, ennemies, global_mode)
     print(str(niveau))
     print(ennemies)
@@ -64,6 +86,7 @@ def update(liste, niveau, ennemies):
 def update_background(back, screen):
     screen.blit(back.surface, back.rect)
     pygame.display.flip()
+
 
 
 pygame.init()
@@ -75,13 +98,16 @@ surfaces = []
 screen = pygame.display.set_mode((1440, 874), RESIZABLE)
 
 
-background = Back("accueil.png", (0,0), screen, surfaces)
+background = Back("accueil.png", (0,0), screen, surfaces, global_mode)
 
 
 level1 = Niveau(30, 7, LEFT, 2, 1, 1, 2)
 
 
 hero, ennemies = init_level(screen, surfaces)
+
+score = 25
+surfaces = update_graph(hero, score, surfaces)
 
 clock = pygame.time.Clock()
 last_key_pressed = 0
@@ -131,7 +157,6 @@ while not quit:
             if (pygame.mouse.get_pos()[0] >= MENU_1) and (pygame.mouse.get_pos()[0] <= MENU_2):
                 background.surface = pygame.image.load(os.path.join(global_mode, "background", "credits.png")).convert_alpha()
                 playable = False
-                print("credit")
             # Aide
             if (pygame.mouse.get_pos()[0] >= MENU_2) and (pygame.mouse.get_pos()[0] <= MENU_3):
                 background.surface = pygame.image.load(os.path.join(global_mode, "background", "aide.png")).convert_alpha()
@@ -170,21 +195,23 @@ while not quit:
         if key and (time.time() - last_key_pressed >= 0.2):
             # if we change the direction, we need another animation
             print(dir)
+            score -= 1
             last_key_pressed = time.time()
-            print(hero.pos)
+
             if dir in [RIGHT, LEFT, DOWN, UP]:
                 hero.move(dir)
             for ennemy in ennemies:
                 ennemy.move(hero)
 
-            print(hero.pos)
             if hero.life == 0:
                 print('GAME OVER')
                 playable = False
-                Back("game-over.jpg", GAME_OVER_POS, screen, surfaces)
+                Back("game-over.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
                 # display first image in cachedeque
                 # screen.blit(cachedeque[0], rect)
+            surfaces = update_graph(hero, score, surfaces)
             update(surfaces, level1, ennemies)
+
     else:
         if key and (dir == OUI):
             print("oui")
@@ -192,6 +219,7 @@ while not quit:
             playable = True
             surfaces = surfaces[:-1]
             hero, ennemies = init_level(screen, surfaces)
+            surfaces = update_graph(hero, score, surfaces)
             update(surfaces, level1, ennemies)
 
 
