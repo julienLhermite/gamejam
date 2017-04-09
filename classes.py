@@ -24,9 +24,9 @@ def find_ennemy_at_with_type(ennemies, ennemy_type, pos):
 
 
 class Back:
-    def __init__(self, image_name, coord, screen, surfaces):
+    def __init__(self, image_name, coord, screen, surfaces, mode):
         self.image_name = image_name
-        self.image_path = os.path.join(global_mode, "background", image_name)
+        self.image_path = os.path.join(mode, "background", image_name)
         self.surface = pygame.image.load(self.image_path).convert_alpha()
         self.screen = screen
         self.rect = self.surface.get_rect()
@@ -41,8 +41,8 @@ class Back:
 
 
 class Personnage():
-    def __init__(self, coord, niveau, image_name, life, ennemies):
-        self.surface = pygame.image.load(os.path.join(global_mode, "case", image_name)).convert_alpha()
+    def __init__(self, coord, niveau, image_name, life, ennemies, mode):
+        self.surface = pygame.image.load(os.path.join(mode, "case", image_name)).convert_alpha()
         self.struct = niveau.structure
         self.struct_size = niveau.size
         self.pos = coord
@@ -58,8 +58,8 @@ class Personnage():
 
 class Hero(Personnage):
 
-    def __init__(self, coord, niveau, image_name, life, ennemies):
-        super().__init__(coord, niveau, image_name, life, ennemies)
+    def __init__(self, coord, niveau, image_name, life, ennemies, mode):
+        super().__init__(coord, niveau, image_name, life, ennemies, mode)
         self.level = 1
 
     def move(self, dir):
@@ -186,12 +186,17 @@ class Hero(Personnage):
 
     def update_life(self, diff):
         self.life += diff
+        if self.life > 5:
+            self.life = 5
+        if self.life < 0:
+            self.life = 0
+        print("VIE :", self.life)
 
 
 class StupidGhost(Personnage):
 
-    def __init__(self, coord, niveau, image_name, life, ennemies):
-        super().__init__(coord, niveau, image_name, life, ennemies)
+    def __init__(self, coord, niveau, image_name, life, ennemies, mode):
+        super().__init__(coord, niveau, image_name, life, ennemies, mode)
         self.type = STUPID_GHOST
         self.ennemies.append(self)
 
@@ -230,8 +235,8 @@ class StupidGhost(Personnage):
 
 class Ghost(Personnage):
 
-    def __init__(self, coord, niveau, image_name, life, ennemies):
-        super().__init__(coord, niveau, image_name, life, ennemies)
+    def __init__(self, coord, niveau, image_name, life, ennemies, mode):
+        super().__init__(coord, niveau, image_name, life, ennemies, mode)
         self.type = GHOST
         self.ennemies.append(self)
 
@@ -265,8 +270,8 @@ class Ghost(Personnage):
 
 class Orc(Personnage):
 
-    def __init__(self, coord, niveau, image_name, life, ennemies):
-        super().__init__(coord, niveau, image_name, life, ennemies)
+    def __init__(self, coord, niveau, image_name, life, ennemies, mode):
+        super().__init__(coord, niveau, image_name, life, ennemies, mode)
         self.type = ORC
         self.ennemies.append(self)
 
@@ -286,6 +291,7 @@ class Orc(Personnage):
                 elif [chose for chose in self.struct[self.pos[0]+mvt[0]][self.pos[1]+mvt[1]] if chose in tangible_possible] != []:
                         mvt_possible.remove(mvt)
 
+        # print(mvt_possible)
         if mvt_possible:
 
             mvt = mvt_possible[random.randrange(len(mvt_possible))]
@@ -384,6 +390,7 @@ class Niveau:
                 self.coord_sorties.append([random_out2, 0])
             if self.direction_in == UP:
                 self.coord_sorties.append([random_out2, self.size - 1])
+        # print(self.coord_sorties)
 
     def generer(self):
         structure_niveau = [["" for i in range(self.size)] for j in range(self.size)]

@@ -18,6 +18,29 @@ import time
 import os
 from classes import *
 
+def update_graph(hero, score, surfaces):
+    surfaces = [surface for surface in surfaces if not surface.image_name.startswith("vie")]
+    Back("vie_back.png", LIFE_POS, screen, surfaces, global_mode)
+    if hero.life >= 1:
+        Back("vie_1.png", LIFE_POS, screen, surfaces, global_mode)
+    if hero.life >= 2:
+        Back("vie_2.png", LIFE_POS, screen, surfaces, global_mode)
+    if hero.life >= 3:
+        Back("vie_3.png", LIFE_POS, screen, surfaces, global_mode)
+    if hero.life >= 4:
+        Back("vie_4.png", LIFE_POS, screen, surfaces, global_mode)
+    if hero.life >= 5:
+        Back("vie_5.png", LIFE_POS, screen, surfaces, global_mode)
+
+    surfaces= [surface for surface in surfaces if not surface.image_name == "point.png"]
+    for point in range(1,score+1):
+        if point % 10:
+            Back("1point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
+        else:
+            Back("10point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
+    return surfaces
+
+
 
 def init_level(scr, surf, lvl):
     surf = [s for s in surf if (s.image_name != "bordure.png") and (s.image_name != "floor.png")]
@@ -26,16 +49,16 @@ def init_level(scr, surf, lvl):
         if (i == 0) or (i == lvl.size + 1):
             for j in range(lvl.size + 2):
                 Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
-                     scr, surf)
+                     scr, surf, global_mode)
         else:
             for j in [0, lvl.size + 1]:
                 Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
                      scr,
-                     surf)
+                     surf, global_mode)
             for j in range(1, lvl.size + 1):
                 Back("floor.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
                      scr,
-                     surf)
+                     surf, global_mode)
     return surf
 
 def init_personnage(lvl, old_lvl):
@@ -45,14 +68,14 @@ def init_personnage(lvl, old_lvl):
         for col in range(lvl.size):
             case = lvl.structure[lin][col]
             if DEPART in case:
-                h = Hero([lin, col], lvl, "hero.png", 1, ennem)
+                h = Hero([lin, col], lvl, "hero.png", 5, ennem, global_mode)
                 h.level = old_lvl
             elif STUPID_GHOST in case:
-                StupidGhost([lin, col], lvl, "stupid_ghost.png", 1, ennem)
+                StupidGhost([lin, col], lvl, "stupid_ghost.png", 1, ennem, global_mode)
             elif GHOST in case:
-                Ghost([lin, col], lvl, "ghost.png", 1, ennem)
+                Ghost([lin, col], lvl, "ghost.png", 1, ennem, global_mode)
             elif ORC in case:
-                Orc([lin, col], lvl, "orc.png", 1, ennem)
+                Orc([lin, col], lvl, "orc.png", 1, ennem, global_mode)
 
     return h, ennem
 
@@ -79,7 +102,7 @@ surfaces = []
 screen = pygame.display.set_mode((1440, 874), RESIZABLE)
 
 
-background = Back("accueil.png", (0,0), screen, surfaces)
+background = Back("accueil.png", (0,0), screen, surfaces, global_mode)
 
 level = Niveau(LVL[1][0], LVL[1][1], LVL[1][2], LVL[1][3], LVL[1][4], LVL[1][5], LVL[1][6])
 
@@ -87,6 +110,9 @@ old_level = 1
 surfaces = init_level(screen, surfaces, level)
 hero, ennemies = init_personnage(level, old_level)
 
+
+score = 25
+surfaces = update_graph(hero, score, surfaces)
 
 clock = pygame.time.Clock()
 last_key_pressed = 0
@@ -173,20 +199,22 @@ while not quit:
         if key and (time.time() - last_key_pressed >= 0.2):
             # if we change the direction, we need another animation
             print(dir)
+            score -= 1
             last_key_pressed = time.time()
-            print(hero.pos)
+
             if dir in [RIGHT, LEFT, DOWN, UP]:
                 hero.move(dir)
             for ennemy in ennemies:
                 ennemy.move(hero)
-            print(old_level, hero.level, hero.life)
-            print(hero.pos)
+
             if hero.life == 0:
                 print('GAME OVER')
                 playable = False
-                Back("game-over.jpg", GAME_OVER_POS, screen, surfaces)
+                Back("game-over.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
                 # display first image in cachedeque
                 # screen.blit(cachedeque[0], rect)
+            surfaces = update_graph(hero, score, surfaces)
+
             update(surfaces, level, ennemies)
             if hero.level > old_level:
                 old_level = hero.level
@@ -212,9 +240,11 @@ while not quit:
             old_level = 1
             level = Niveau(LVL[1][0], LVL[1][1], LVL[1][2], LVL[1][3], LVL[1][4], LVL[1][5], LVL[1][6])
             playable = True
+            score = 25
             surfaces = [s for s in surfaces if s.image_name != "game-over.jpg" and s.image_name != "gagne.jpg"]
             surfaces = init_level(screen, surfaces, level)
             hero, ennemies =init_personnage(level, old_level)
+            surfaces = update_graph(hero, score, surfaces)
             update(surfaces, level, ennemies)
         elif key and (dir == NON):
             quit=True
