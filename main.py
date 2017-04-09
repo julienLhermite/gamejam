@@ -194,7 +194,6 @@ while not quit:
                 update(surfaces, level, ennemies)
 
     if playable:
-
         # if a key of the 'moves' dict is pressed et que c'est jouable:
         if key and (time.time() - last_key_pressed >= 0.2):
             # if we change the direction, we need another animation
