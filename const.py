@@ -44,10 +44,14 @@ GAME_OVER_POS = (DEP_BORDER_CASE[0]+20*CELL_SIZE[0], DEP_BORDER_CASE[1]+CELL_SIZ
 FIRST_CELL_X = 120
 FIRST_CELL_Y = 80
 
-# taux, size, coté, sorties, nb_ghost_stupid, nb_ghost, nb_orc)
-LVL = {1: [0, 12,LEFT, 0, 0, 0, 1, 1],
-            2: [20, 9,RIGHT, 2, 2, 2, 2, 2],
-      3: [10, 7,LEFT, 2, 1, 1, 1, 1]
+        # taux, size, coté, sorties, nb_ghost_stupid, nb_ghost, nb_orc , nb_tourelle)
+LVL = { 1: [5,    7,   LEFT,    1,        3,              0,       0,      0],
+        2: [10,   8,   RIGHT,    1,        2,              2,       0,      0],
+        3: [30,    20,   LEFT,    2,        0,              0,       3,      0],
+        4: [85,    12,   RIGHT,    1,        4,              2,       2,      0],
+        5: [20,    14,   LEFT,    1,        0,              1,       2,      1],
+        6: [10,    15,   RIGHT,    1,        2,              1,       3,      2],
+        7: [15,    10,   LEFT,    1,        3,              2,       4,      5],
       }
 
 LIFE_POS = (DEP_BORDER_CASE[0]+20*CELL_SIZE[0], DEP_BORDER_CASE[1]+CELL_SIZE[1]*10)
