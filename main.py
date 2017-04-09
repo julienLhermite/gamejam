@@ -37,7 +37,7 @@ pygame.init()
 surfaces = []
 
 # set window and background
-screen = pygame.display.set_mode((1440, 874))
+screen = pygame.display.set_mode((1440, 874), RESIZABLE)
 
 
 background = Back("accueil.png", (0,0), screen, surfaces)
@@ -150,12 +150,12 @@ while not quit:
                 ennemy.move(hero)
 
             print(hero.pos)
-            update(surfaces, level1, ennemies)
-
             if hero.life == 0:
                 print('GAME OVER')
                 Back("game-over.jpg", GAME_OVER_POS, screen, surfaces)
                 # display first image in cachedeque
                 # screen.blit(cachedeque[0], rect)
+            update(surfaces, level1, ennemies)
+
 
 

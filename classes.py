@@ -58,10 +58,11 @@ class Hero(Personnage):
             elif MUR_CASSE in self.struct[self.pos[0]+1][self.pos[1]]:
                 self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR_CASSE,"")
             # si il y a un ennemy
-            ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] + 1, self.pos[1]]]
-            if ennemies_at != []:
-                for ennemy in ennemies_at:
-                    ennemy.update_life(-1)
+            else:
+                ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] + 1, self.pos[1]]]
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
 
 
         elif (dir == UP) and (self.pos[0] > 0):
@@ -73,12 +74,12 @@ class Hero(Personnage):
                 self.struct[self.pos[0] - 1][self.pos[1]] = self.struct[self.pos[0]-1][self.pos[1]].replace(MUR,MUR_CASSE)
             elif MUR_CASSE in self.struct[self.pos[0]-1][self.pos[1]]:
                 self.struct[self.pos[0] - 1][self.pos[1]] = self.struct[self.pos[0]-1][self.pos[1]].replace(MUR_CASSE,"")
-
-            # si il y a un ennemy
-            ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] - 1, self.pos[1]]]
-            if ennemies_at != []:
-                for ennemy in ennemies_at:
-                    ennemy.update_life(-1)
+            else:
+                # si il y a un ennemy
+                ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] - 1, self.pos[1]]]
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
 
         elif (dir == RIGHT) and (self.pos[1] < self.struct_size-1):
 
@@ -90,11 +91,12 @@ class Hero(Personnage):
                 self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR,MUR_CASSE)
             elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]+1]:
                 self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR_CASSE,"")
-            # si il y a un ennemy
-            ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]+1]]
-            if ennemies_at != []:
-                for ennemy in ennemies_at:
-                    ennemy.update_life(-1)
+            else:
+                # si il y a un ennemy
+                ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]+1]]
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
 
         elif (dir == LEFT) and (self.pos[1] > 0):
             if [chose for chose in self.struct[self.pos[0]][self.pos[1]-1] if chose in TANGIBLE] == []:
@@ -105,11 +107,12 @@ class Hero(Personnage):
                 self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR,MUR_CASSE)
             elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]-1]:
                 self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR_CASSE,"")
-            # si il y a un ennemy
-            ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]-1]]
-            if ennemies_at != []:
-                for ennemy in ennemies_at:
-                    ennemy.update_life(-1)
+            else:
+                # si il y a un ennemy
+                ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]-1]]
+                if ennemies_at != []:
+                    for ennemy in ennemies_at:
+                        ennemy.update_life(-1)
 
     def update_life(self, diff):
         self.life += diff
@@ -198,19 +201,22 @@ class Orc(Personnage):
         self.ennemies.append(self)
 
     def move(self, hero):
-        mvt_possible = [(i,j) for i in range(-1,2) for j in range(-1,2)]
-        mvt_possible.remove((0,0))
+        if (abs(hero.pos[0]-self.pos[0]) <= 1) and (abs(hero.pos[1]-self.pos[1]) <= 1):
+            mvt_possible = [(hero.pos[0]-self.pos[0], hero.pos[1]-self.pos[1])]
+        else:
+            mvt_possible = [(i,j) for i in range(-1,2) for j in range(-1,2)]
+            mvt_possible.remove((0,0))
 
-        mvt_possible_copy = [m for m in mvt_possible]
-        tangible_possible = [t for t in TANGIBLE if t != HERO]
-        for mvt in mvt_possible_copy:
-            if (self.pos[0]+mvt[0] > self.struct_size-1) or (self.pos[0]+mvt[0] < 0) or (self.pos[1]+mvt[1] < 0) or \
-               (self.pos[1] + mvt[1] > self.struct_size - 1):
-                mvt_possible.remove(mvt)
-            elif [chose for chose in self.struct[self.pos[0]+mvt[0]][self.pos[1]+mvt[1]] if chose in tangible_possible] != []:
+            mvt_possible_copy = [m for m in mvt_possible]
+            tangible_possible = [t for t in TANGIBLE if t != HERO]
+            for mvt in mvt_possible_copy:
+                if (self.pos[0]+mvt[0] > self.struct_size-1) or (self.pos[0]+mvt[0] < 0) or (self.pos[1]+mvt[1] < 0) or \
+                   (self.pos[1] + mvt[1] > self.struct_size - 1):
                     mvt_possible.remove(mvt)
+                elif [chose for chose in self.struct[self.pos[0]+mvt[0]][self.pos[1]+mvt[1]] if chose in tangible_possible] != []:
+                        mvt_possible.remove(mvt)
 
-        print(self.pos, mvt_possible, hero.pos)
+        print(mvt_possible)
         if mvt_possible:
 
             mvt = mvt_possible[random.randrange(len(mvt_possible))]
