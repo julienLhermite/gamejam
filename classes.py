@@ -330,13 +330,27 @@ class Orc(Personnage):
             self.ennemies.remove(self)
 
 class FireBall(Personnage):
-    def __init__(self, coord, niveau, image_name, life, ennemies, mode):
-        super().__init__(coord, niveau, image_name, life, ennemies, mode)
+    def __init__(self, coord, niveau, image_name, life, ennemies, mode, hero):
+        self.surface = pygame.image.load(os.path.join(mode, "case", image_name)).convert_alpha()
+        self.struct = niveau.structure
+        self.struct_size = niveau.size
+        self.pos = coord
+        self.life = life
+        self.ennemies = ennemies
+        self.image_name = image_name
+        self.mode = mode
         self.type = FIREBALL
         self.dir = None
         self.ennemies.append(self)
         self.struct[self.pos[0]][self.pos[1]] += FIREBALL
+        if HERO in self.struct[self.pos[0]][self.pos[1]]:
+            hero.update_life(-1)
+            self.update_life(-1)
 
+    def maj_mode(self, mode):
+        self.mode = mode
+        self.image_path = os.path.join(mode, "case", self.image_name)
+        self.surface = pygame.image.load(self.image_path).convert_alpha()
 
     def move(self, hero):
         if self.dir == RIGHT:
@@ -414,16 +428,10 @@ class Turret(Personnage):
         elif dir == DOWN:
             fireball_pos = [self.pos[0]+1, self.pos[1]]
 
-
         if (fireball_pos[0] in list(range(self.struct_size))) and ((fireball_pos[1] in list(range(self.struct_size)))):
             tangible_possible = [t for t in TANGIBLE if t != HERO]
-            print(fireball_pos, hero.pos, self.struct[fireball_pos[0]][fireball_pos[1]])
-            if [chose for chose in self.struct[fireball_pos[0]][fireball_pos[1]] if chose in tangible_possible] == []:
-                f = FireBall(fireball_pos, self.niveau, "fireball.png", 1, self.ennemies, self.mode)
-                f.dir = dir
-            elif hero.pos == fireball_pos:
-                hero.update_life(-1)
-
+            f = FireBall(fireball_pos, self.niveau, "fireball.png", 1, self.ennemies, self.mode, hero)
+            f.dir = dir
 
     def update_life(self, diff):
         self.life += diff
