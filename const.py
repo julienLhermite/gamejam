@@ -6,6 +6,13 @@ OUI = "oui"
 NON = "non"
 SPACE = "space"
 
+coord_dir = {RIGHT: (0, 1),
+             LEFT: (0, -1),
+             UP: (-1, 0),
+             DOWN: (1, 0)
+            }
+
+
 MUR = "M"
 MUR_CASSE = "m"
 DEPART = "D"

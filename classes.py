@@ -1,12 +1,21 @@
+#!/usr/local/bin/python3.5
+# -*- coding: <encoding name> -*-
+
 import os
 import pygame
 from const import *
+# from outils import find_ennemy_at_with_type
 import random
 
 random.seed()
 
-
 def find_ennemy_at(ennemies, pos):
+    """
+    Retourne l'ennemie qui occupe la position pos
+    :param ennemies: liste des ennemies
+    :param pos: positon recherché
+    :return: liste des ennemies à la position x
+    """
     ennemy_at = []
     for ennemy in ennemies:
         if ennemy.pos == pos :
@@ -15,6 +24,13 @@ def find_ennemy_at(ennemies, pos):
 
 
 def find_ennemy_at_with_type(ennemies, ennemy_type, pos):
+    """
+    Retourne l'ennemie qui occupe la position pos
+    :param ennemies: liste des ennemies
+    :param pos: positon recherché
+    :param ennemy_type: le type de l'ennemie
+    :return: liste des ennemies à la position pos avec le type ennemy_time
+    """
     ennemy_at_with = []
     for ennemy in ennemies:
         if (ennemy.pos == pos) and (ennemy_type == ennemy.type):
@@ -22,9 +38,18 @@ def find_ennemy_at_with_type(ennemies, ennemy_type, pos):
     return ennemy_at_with
 
 
-
-class Back:
+class Background():
+    """
+    Les objets de la classe Background sont des éléments du décors
+    """
     def __init__(self, image_name, coord, screen, surfaces, mode):
+        """
+        :param image_name: le nom de l'image associé
+        :param coord: la coordonnée
+        :param screen: l'écran sur lequel s'afficher
+        :param surfaces: la surface pygame associé
+        :param mode: le mode d'affichage graphique ou non
+        """
         self.image_name = image_name
         self.image_path = os.path.join(mode, "background", image_name)
         self.surface = pygame.image.load(self.image_path).convert_alpha()
@@ -35,12 +60,19 @@ class Back:
         surfaces.append(self)
 
     def maj_mode(self, mode):
-
+        """
+        Change le mode d'affichage
+        :param mode: le mode d'affichage
+        """
+        self.mode = mode
         self.image_path = os.path.join(mode, "background", self.image_name)
         self.surface = pygame.image.load(self.image_path).convert_alpha()
 
 
-class Personnage():
+class Personnage:
+    """
+    Classe parente à tous les personnages
+    """
     def __init__(self, coord, niveau, image_name, life, ennemies, mode):
         self.surface = pygame.image.load(os.path.join(mode, "case", image_name)).convert_alpha()
         self.struct = niveau.structure
@@ -52,9 +84,26 @@ class Personnage():
         self.mode = mode
 
     def maj_mode(self, mode):
+        """
+        Change le mode d'affichage
+        :param mode: le mode d'affichage
+        """
         self.mode = mode
         self.image_path = os.path.join(mode, "case", self.image_name)
         self.surface = pygame.image.load(self.image_path).convert_alpha()
+
+    def move(self):
+        """
+        Méthode à overwrite pour chaque type de personage
+        """
+        pass
+
+    def update_life(self):
+        """
+        Méthode à overwrite pour chaque type de personage   "
+        """
+        pass
+
 
 class Hero(Personnage):
 
@@ -68,136 +117,58 @@ class Hero(Personnage):
         self.surface = pygame.image.load(self.image_path).convert_alpha()
 
     def move(self, dir):
-        if (dir == DOWN) and (self.pos[0] < self.struct_size-1):
-            # si rien n'est tangible sur la case où on veut aller
-            if [chose for chose in self.struct[self.pos[0]+1][self.pos[1]] if chose in TANGIBLE] == []:
-                self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(HERO,"")
-                self.pos[0] += 1
-                self.struct[self.pos[0]][self.pos[1]] += HERO
-            # (si y a un mur on le casse un peu)
-            elif MUR in self.struct[self.pos[0]+1][self.pos[1]]:
-                self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR,MUR_CASSE)
-                # si extoplasme dans le mur
-                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0] + 1, self.pos[1]]) +\
-                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0]+1,self.pos[1]])
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        ennemy.update_life(-1)
-            elif MUR_CASSE in self.struct[self.pos[0]+1][self.pos[1]]:
-                self.struct[self.pos[0] + 1][self.pos[1]] = self.struct[self.pos[0]+1][self.pos[1]].replace(MUR_CASSE,"")
-                # si extoplasme dans le mur
+        if dir == UP:
+            mv = (-1, 0)
+        elif dir == DOWN:
+            mv = (1, 0)
+        elif dir == LEFT:
+            mv = (0, -1)
+        elif dir == RIGHT:
+            mv = (0, 1)
 
-                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0] + 1, self.pos[1]]) +\
-                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0]+1, self.pos[1]])
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        ennemy.update_life(-1)
-            # si il y a un ennemy
+        next_case_coord = [self.pos[0] + mv[0], self.pos[1] + mv[1]]
+        # si la case ou l'on va existe
+        if (next_case_coord[0] in range(self.struct_size)) and (next_case_coord[1] in range(self.struct_size)):
+            # si rien de tangible sur la case ou on va
+            if not [chose for chose in self.struct[next_case_coord[0]][next_case_coord[1]] if chose in TANGIBLE]:
+                self.struct[self.pos[0]][self.pos[1]] = self.struct[next_case_coord[0]][next_case_coord[1]]\
+                                                                                       .replace(HERO, "")
+
+                self.pos[0] += mv[0]
+                self.pos[1] += mv[1]
+                self.struct[self.pos[0]][self.pos[1]] += HERO
+
             else:
-                ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] + 1, self.pos[1]]]
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        if ennemy.type == FIREBALL:
+                print(self.ennemies)
+                ennemies_at = find_ennemy_at(self.ennemies, next_case_coord)
+                print("ennemies", ennemies_at)
+                # si mur on le casse un peu
+                if MUR in self.struct[self.pos[0] + mv[0]][self.pos[1] + mv[1]]:
+                    self.struct[next_case_coord[0]][next_case_coord[1]] = self.struct[next_case_coord[0]][next_case_coord[1]] \
+                                                                .replace(MUR, MUR_CASSE)
+                    # si extoplasme dans le mur
+                    if (GHOST or STUPID_GHOST) in [e.type for e in ennemies_at]:
+                        for e in ennemies_at:
+                            e.update_life(-1)
+
+                # si mur cassé il dipsarait
+                elif MUR_CASSE in self.struct[self.pos[0] + mv[0]][self.pos[1] + mv[1]]:
+                    self.struct[next_case_coord[0]][next_case_coord[1]] = self.struct[next_case_coord[0]][
+                                                                                      next_case_coord[1]] \
+                                                                                      .replace(MUR_CASSE, "")
+                    # si extoplasme dans le mur
+                    if (GHOST or STUPID_GHOST) in [e.type for e in ennemies_at]:
+                        for e in ennemies_at:
+                            e.update_life(-1)
+
+                else:
+                    for e in ennemies_at:
+                        print("je tue")
+                        if e.type == FIREBALL:
                             self.update_life(-1)
-                        ennemy.update_life(-1)
-
-
-        elif (dir == UP) and (self.pos[0] > 0):
-            if [chose for chose in self.struct[self.pos[0]-1][self.pos[1]] if chose in TANGIBLE] == []:
-                self.struct[self.pos[0]][self.pos[1]] =  self.struct[self.pos[0]][self.pos[1]].replace(HERO, "")
-                self.pos[0] -= 1
-                self.struct[self.pos[0]][self.pos[1]] += HERO
-            elif MUR in self.struct[self.pos[0]-1][self.pos[1]]:
-                self.struct[self.pos[0] - 1][self.pos[1]] = self.struct[self.pos[0]-1][self.pos[1]].replace(MUR,MUR_CASSE)
-                # si extoplasme dans le mur
-                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0] - 1, self.pos[1]]) +\
-                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0]-1,self.pos[1]])
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        ennemy.update_life(-1)
-            elif MUR_CASSE in self.struct[self.pos[0]-1][self.pos[1]]:
-                self.struct[self.pos[0] - 1][self.pos[1]] = self.struct[self.pos[0]-1][self.pos[1]].replace(MUR_CASSE,"")
-                # si extoplasme dans le mur
-                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0] - 1, self.pos[1]]) +\
-                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0]-1,self.pos[1]])
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        if ennemy.type == FIREBALL:
-                            self.update_life(-1)
-                        ennemy.update_life(-1)
-            else:
-                # si il y a un ennemy
-                ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0] - 1, self.pos[1]]]
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        if ennemy.type == FIREBALL:
-                            self.update_life(-1)
-                        ennemy.update_life(-1)
-
-        elif (dir == RIGHT) and (self.pos[1] < self.struct_size-1):
-
-            if [chose for chose in self.struct[self.pos[0]][self.pos[1]+1] if chose in TANGIBLE] == []:
-                self.struct[self.pos[0]][self.pos[1]] =  self.struct[self.pos[0]][self.pos[1]].replace(HERO, "")
-                self.pos[1] += 1
-                self.struct[self.pos[0]][self.pos[1]] += HERO
-            elif MUR in self.struct[self.pos[0]][self.pos[1]+1]:
-                self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR,MUR_CASSE)
-                # si extoplasme dans le mur
-                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0], self.pos[1]+1]) +\
-                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0], self.pos[1]+1])
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        ennemy.update_life(-1)
-            elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]+1]:
-                self.struct[self.pos[0]][self.pos[1] + 1] = self.struct[self.pos[0]][self.pos[1]+1].replace(MUR_CASSE,"")
-                # si extoplasme dans le mur
-                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0], self.pos[1]+1]) +\
-                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0], self.pos[1]+1])
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        ennemy.update_life(-1)
-            else:
-                # si il y a un ennemy
-                ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]+1]]
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        for ennemy in ennemies_at:
-                            if ennemy.type == FIREBALL:
-                                self.update_life
-                        ennemy.update_life(-1)
-
-        elif (dir == LEFT) and (self.pos[1] > 0):
-            if [chose for chose in self.struct[self.pos[0]][self.pos[1]-1] if chose in TANGIBLE] == []:
-                self.struct[self.pos[0]][self.pos[1]] =  self.struct[self.pos[0]][self.pos[1]].replace(HERO,"")
-                self.pos[1] -= 1
-                self.struct[self.pos[0]][self.pos[1]] += HERO
-            elif MUR in self.struct[self.pos[0]][self.pos[1]-1]:
-                self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR,MUR_CASSE)
-                # si extoplasme dans le mur
-                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0], self.pos[1]-1]) +\
-                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0], self.pos[1]-1])
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        ennemy.update_life(-1)
-            elif MUR_CASSE in self.struct[self.pos[0]][self.pos[1]-1]:
-                self.struct[self.pos[0]][self.pos[1] - 1] = self.struct[self.pos[0]][self.pos[1]-1].replace(MUR_CASSE,"")
-                # si extoplasme dans le mur
-                ennemies_at = find_ennemy_at_with_type(self.ennemies, GHOST, [self.pos[0], self.pos[1] - 1]) + \
-                              find_ennemy_at_with_type(self.ennemies, STUPID_GHOST, [self.pos[0], self.pos[1] - 1])
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        ennemy.update_life(-1)
-            else:
-                # si il y a un ennemy
-                ennemies_at = [ennemy for ennemy in self.ennemies if ennemy.pos == [self.pos[0], self.pos[1]-1]]
-                if ennemies_at != []:
-                    for ennemy in ennemies_at:
-                        if ennemy.type == FIREBALL:
-                            self.update_life
-                        ennemy.update_life(-1)
+                        e.update_life(-1)
 
         self.maj_image(dir)
-
         if SORTIE in self.struct[self.pos[0]][self.pos[1]]:
             self.level += 1
 
@@ -383,6 +354,7 @@ class FireBall(Personnage):
         if self.life <= 0:
             self.struct[self.pos[0]][self.pos[1]] = self.struct[self.pos[0]][self.pos[1]].replace(self.type, "")
             self.ennemies.remove(self)
+
 
 class Turret(Personnage):
 

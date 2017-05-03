@@ -93,7 +93,7 @@ def find_ennemy_at_with_type(ennemies, ennemy_type, pos):
 
 
 
-class Back:
+class Background:
     def __init__(self, image_name, coord, screen, surfaces, mode):
         self.image_name = image_name
         self.image_path = os.path.join(mode, "background", image_name)
@@ -661,7 +661,7 @@ def update_graph(hero, score, score_retenue, surfaces):
 
     # Points
     surfaces= [surface for surface in surfaces if not surface.image_name == "point.png"]
-    Back("point_back.png", (SCORE_POS[0] - 20, SCORE_POS[1] - 320), screen, surfaces, global_mode)
+    Background("point_back.png", (SCORE_POS[0] - 20, SCORE_POS[1] - 320), screen, surfaces, global_mode)
     memoir_score = score
     if score < 0:
         new_score = 0
@@ -671,9 +671,9 @@ def update_graph(hero, score, score_retenue, surfaces):
 
     for point in range(1,score_jauge+1):
         if point % 10:
-            Back("1point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
+            Background("1point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
         else:
-            Back("10point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
+            Background("10point.png", (SCORE_POS[0], SCORE_POS[1] - 3 * point), screen, surfaces, global_mode)
 
     memoir_score_retenue = score_retenue
     new_score_retenue = max([score_retenue, score // 100])
@@ -682,17 +682,17 @@ def update_graph(hero, score, score_retenue, surfaces):
 
     # Vie
     surfaces = [surface for surface in surfaces if not surface.image_name.startswith("vie")]
-    Back("vie_back.png", LIFE_POS, screen, surfaces, global_mode)
+    Background("vie_back.png", LIFE_POS, screen, surfaces, global_mode)
     if hero.life >= 1:
-        Back("vie_1.png", LIFE_POS, screen, surfaces, global_mode)
+        Background("vie_1.png", LIFE_POS, screen, surfaces, global_mode)
     if hero.life >= 2:
-        Back("vie_2.png", LIFE_POS, screen, surfaces, global_mode)
+        Background("vie_2.png", LIFE_POS, screen, surfaces, global_mode)
     if hero.life >= 3:
-        Back("vie_3.png", LIFE_POS, screen, surfaces, global_mode)
+        Background("vie_3.png", LIFE_POS, screen, surfaces, global_mode)
     if hero.life >= 4:
-        Back("vie_4.png", LIFE_POS, screen, surfaces, global_mode)
+        Background("vie_4.png", LIFE_POS, screen, surfaces, global_mode)
     if hero.life >= 5:
-        Back("vie_5.png", LIFE_POS, screen, surfaces, global_mode)
+        Background("vie_5.png", LIFE_POS, screen, surfaces, global_mode)
 
     return surfaces, new_score_retenue, new_score
 
@@ -704,15 +704,15 @@ def init_level(scr, surf, lvl):
     for i in range(lvl.size + 2):
         if (i == 0) or (i == lvl.size + 1):
             for j in range(lvl.size + 2):
-                Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
+                Background("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
                      scr, surf, global_mode)
         else:
             for j in [0, lvl.size + 1]:
-                Back("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
+                Background("bordure.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
                      scr,
                      surf, global_mode)
             for j in range(1, lvl.size + 1):
-                Back("floor.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
+                Background("floor.png", (DEP_BORDER_CASE[0] + i * CELL_SIZE[0], DEP_BORDER_CASE[1] + j * CELL_SIZE[1]),
                      scr,
                      surf, global_mode)
     return surf
@@ -765,7 +765,7 @@ surfaces = []
 screen = pygame.display.set_mode((1440, 874), RESIZABLE)
 
 
-background = Back("accueil.png", (0,0), screen, surfaces, global_mode)
+background = Background("accueil.png", (0,0), screen, surfaces, global_mode)
 
 level = Niveau(LVL[1][0], LVL[1][1], LVL[1][2], LVL[1][3], LVL[1][4], LVL[1][5], LVL[1][6], LVL[1][7])
 
@@ -881,7 +881,7 @@ while not quit:
                     playable = False
                     hero.image_name = "hero-dead.png"
                     hero.surface = pygame.image.load(os.path.join(global_mode, "case", 'hero-dead.png')).convert_alpha()
-                    Back("game-over.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
+                    Background("game-over.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
                     # display first image in cachedeque
                     # screen.blit(cachedeque[0], rect)
                 surfaces, score_retenue, score = update_graph(hero, score, score_retenue, surfaces)
@@ -905,7 +905,7 @@ while not quit:
                     try:
                         level = Niveau(LVL[l][0], LVL[l][1], LVL[l][2], LVL[l][3], LVL[l][4], LVL[l][5], LVL[l][6], LVL[l][7])
                     except KeyError:
-                        Back("gagne.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
+                        Background("gagne.jpg", GAME_OVER_POS, screen, surfaces, global_mode)
                         playable = False
                     else:
                         surfaces = init_level(screen, surfaces, level)
