@@ -54,9 +54,20 @@ moves = {pygame.K_LEFT:  (walk_left,  (-2, 0)),
          pygame.K_UP: (walk_up, (0, -2)),
          pygame.K_DOWN: (walk_down, (0, 2))}
 
+level = Niveau(ratio_murs=65, size=7, coord_depart=[0,4])
+print(level.structure)
+
 while not quit:
     quit = pygame.event.get(pygame.QUIT)
     pygame.event.poll()
+
+
+
+
+    level.afficher(screen)
+
+
+
 
     # state of the keys
     keys = pygame.key.get_pressed()
@@ -107,9 +118,9 @@ while not quit:
 # fenetre = pygame.display.set_mode((1920,1080))
 # # fenetre = pygame.display.set_mode((1920,1080), FULLSCREEN)
 #
-# fond = pygame.image.load(os.path.join("images", "background", "background.png")).convert()
+# fond = pygame.image.load(os.path.join(global_mode, "background", "background.png")).convert_alpha()
 #
-# hero = Perso("hero", "perso.png", (0,0), 3, fenetre)
+# hero = Perso("hero", "hero-down.png", (0,0), 3, fenetre)
 #
 #
 # def update():
